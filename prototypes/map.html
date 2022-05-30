@@ -4,8 +4,34 @@
     <title>D3 World Map</title>
     <script src="http://d3js.org/d3.v5.min.js"></script>
     <script src="http://d3js.org/topojson.v0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
   </head>
   <body>
+    <div>
+      <label for="group">Group:</label>
+      <select name="group" id="group">
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
+        <option value="E">E</option>
+        <option value="F">F</option>
+        <option value="G">G</option>
+        <option value="H">H</option>
+      </select>
+      <br>
+      <label for="position">Position:</label>
+      <select name="position" id="position">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+      <br>
+      <button onclick="drawPaths()">
+        Submit
+      </button>
+    </div>
     <script src="map.js"></script>
   </body>
 </html>
