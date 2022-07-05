@@ -1,0 +1,25 @@
+<div class="container">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <a routerLink="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+            <span class="fs-4">
+                2023 World Cup Explorer
+            </span>
+        </a>
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a routerLink="/schedule" class="nav-link" routerLinkActive #rlaS="routerLinkActive"
+                    [ngClass]="rlaS.isActive ? 'link-secondary' : 'link-dark'">Schedule</a>
+            </li>
+            <li>
+                <a routerLink="/map" class="nav-link" routerLinkActive #rlaM="routerLinkActive"
+                    [ngClass]="rlaM.isActive ? 'link-secondary' : 'link-dark'">Map</a>
+            </li>
+            <li>
+                <a routerLink="/itinerary" class="nav-link" routerLinkActive #rlaI="routerLinkActive"
+                    [ngClass]="rlaI.isActive ? 'link-secondary' : 'link-dark'">Itinerary</a>
+            </li>
+        </ul>
+
+    </header>
+</div>
+<router-outlet></router-outlet>
