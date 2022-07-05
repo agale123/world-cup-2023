@@ -36,6 +36,20 @@ let games;
 let g;
 let projection;
 
+function getCities(id) {
+    const groupStage = games
+        .filter(game => game.home === id || game.away === id)
+        .map(game => game.city);
+
+    const knockoutStage = [
+        ['Auckland', 'Hamilton'],
+        ['Dunedin', 'Perth'],
+        ['Brisbane', 'Melbourne'],
+        'Sydney',
+    ];
+    return [...groupStage, ...knockoutStage];
+}
+
 Promise.all([d3.json("data.geojson"), d3.csv("games.csv")]).then(([countries, allGames]) => {
     games = allGames;
     let svg = d3.select("body").append("svg")
@@ -108,59 +122,81 @@ function drawPaths() {
     let position = document.getElementById('position').value;
     let id = `${group}${position}`
 
-    let destinations = games
-        .filter(game => game.home === id || game.away === id)
-        .map(game => game.city);
+    let destinations = getCities(id);
 
-    let index = 0;
+    let index = -1;
     let repeat = () => {
-        let path = g.selectAll("path" + index)
-            .data([{ start: destinations[index], end: destinations[index + 1] }])
-            .enter()
-            .append("path")
-            .attr("d", d => {
-                let [x1, y1] = projection(cities[d.start]);
-                let [x2, y2] = projection(cities[d.end]);
-                let path = d3.path();
-                if (d.start === d.end) {
-                    path.arc(x1, y1 + 15, 15, 3.14 * 3 / 2, 3.14 * 7 / 2)
-                } else {
-                    path.moveTo(x1, y1);
-                    // Find a curve through a point perpendicular to the center point
-                    // at a distance of d/6.
-                    let d = Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2)) * Math.sqrt(10 / 36);
-                    let theta = Math.atan(1 / 3) + Math.atan(Math.abs((y2 - y1) / (x2 - x1)));
-                    let x = Math.cos(theta) * d * Math.sign(x2 - x1);
-                    let y = Math.sin(theta) * d * Math.sign(y2 - y1);
-                    path.quadraticCurveTo(x1 + x, y1 + y, x2, y2);
-                }
-                return path;
-            })
-            .attr("stroke-width", 3)
-            .attr("stroke", green)
-            .attr("opacity", 0.5 + (index / destinations.length) * 0.5)
-            .style("fill", "none")
-            .attr("class", "line");
+        if (++index >= destinations.length - 1) {
+            return;
+        }
 
-        let totalLength = path.node().getTotalLength();
+        let data;
+        if (typeof destinations[index] === 'string' && typeof destinations[index + 1] === 'string') {
+            data = [{ start: destinations[index], end: destinations[index + 1] }];
+        } else {
+            data = [
+                {
+                    start: typeof destinations[index] === 'string' ? destinations[index] : destinations[index][0],
+                    end: typeof destinations[index + 1] === 'string' ? destinations[index + 1] : destinations[index + 1][0]
+                },
+                {
+                    start: typeof destinations[index] === 'string' ? destinations[index] : destinations[index][1],
+                    end: typeof destinations[index + 1] === 'string' ? destinations[index + 1] : destinations[index + 1][1]
+                },
+            ]
+        }
 
-        path.attr("stroke-dasharray", totalLength + " " + totalLength)
-            .attr("stroke-dashoffset", totalLength)
-            .transition()
-            .duration(1000)
-            .ease(d3.easeLinear)
-            .attr("stroke-dashoffset", 0)
-            .on("end", () => {
-                if (destinations[index] === destinations[index + 1]) {
-                    path.attr("marker-end", "url(#arrow2)");
-                } else {
-                    path.attr("marker-end", "url(#arrow)");
-                }
-                
-                if (++index < destinations.length - 1) {
-                    repeat();
-                }
-            });
+        let first = true;
+        for (const line of data) {
+            let path = g.selectAll("path" + index)
+                .data([line])
+                .enter()
+                .append("path")
+                .attr("d", d => {
+                    let [x1, y1] = projection(cities[d.start]);
+                    let [x2, y2] = projection(cities[d.end]);
+                    let path = d3.path();
+                    if (d.start === d.end) {
+                        path.arc(x1, y1 + 15, 15, 3.14 * 3 / 2, 3.14 * 7 / 2)
+                    } else {
+                        path.moveTo(x1, y1);
+                        // Find a curve through a point perpendicular to the center point
+                        // at a distance of d/6.
+                        let d = Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2)) * Math.sqrt(10 / 36);
+                        let theta = Math.atan(1 / 3) + Math.atan(Math.abs((y2 - y1) / (x2 - x1)));
+                        let x = Math.cos(theta) * d * Math.sign(x2 - x1);
+                        let y = Math.sin(theta) * d * Math.sign(y2 - y1);
+                        path.quadraticCurveTo(x1 + x, y1 + y, x2, y2);
+                    }
+                    return path;
+                })
+                .attr("stroke-width", 3)
+                .attr("stroke", green)
+                .attr("opacity", 0.5 + (index / destinations.length) * 0.5)
+                .style("fill", "none")
+                .attr("class", "line");
+
+            let totalLength = path.node().getTotalLength();
+
+            path.attr("stroke-dasharray", totalLength + " " + totalLength)
+                .attr("stroke-dashoffset", totalLength)
+                .transition()
+                .duration(1000)
+                .ease(d3.easeLinear)
+                .attr("stroke-dashoffset", 0)
+                .on("end", () => {
+                    if (line.start === line.end) {
+                        path.attr("marker-end", "url(#arrow2)");
+                    } else {
+                        path.attr("marker-end", "url(#arrow)");
+                    }
+
+                    if (first) {
+                        first = false;
+                        repeat();
+                    }
+                });
+        }
 
         // Bring the city dots in front of the lines.
         d3.selectAll('.city').raise();
