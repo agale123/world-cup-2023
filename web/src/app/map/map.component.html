@@ -1,3 +1,20 @@
 <div class="container">
-    Map
+    <div class="row">
+        <div class="col col-3">
+            <div class="border-bottom pb-3">
+                <h5>Country</h5>
+                <select class="selectpicker" data-live-search="true" data-width="100%">
+                    <optgroup *ngFor="let group of groups" label="{{group.name}}">
+                        <option *ngFor="let team of group.children" value="team">{{team}}</option>
+                    </optgroup>
+                </select>
+            </div>
+            <h5 class="pt-3">Facts</h5>
+            <ul class="list-group">
+                <li class="list-group-item">Population: x</li>
+                <li class="list-group-item">Average age: x</li>
+            </ul>
+        </div>
+        <div class="map d-flex justify-content-center col"></div>
+    </div>
 </div>

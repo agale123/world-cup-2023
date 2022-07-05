@@ -57,26 +57,20 @@ Promise.all([d3.json("data.geojson"), d3.csv("games.csv")]).then(([countries, al
         .attr("height", height);
     g = svg.append("g");
 
-    svg.append("svg:defs").append("svg:marker")
-        .attr("id", "arrow")
+    svg.append("svg:defs")
+        .selectAll("marker")
+        .data([1, 2])
+        .enter()
+        .append('svg:marker')
+        .attr("id", (d) => `arrow${d}`)
         .attr("viewBox", "0 -4 8 8")
         .attr('refX', 10)
         .attr("markerWidth", 4)
         .attr("markerHeight", 4)
-        .attr("orient", "auto")
+        .attr("orient", (d) => d === 1 ? "auto" : "330")
         .attr("fill", green)
         .append("svg:path")
-        .attr("d", "M0,-4L8,0L0,4");
-    svg.append("svg:defs").append("svg:marker")
-        .attr("id", "arrow2")
-        .attr("viewBox", "0 -4 8 8")
-        .attr('refX', 10)
-        .attr("markerWidth", 4)
-        .attr("markerHeight", 4)
-        .attr("orient", "330")
-        .attr("fill", green)
-        .append("svg:path")
-        .attr("d", "M0,-4L8,0L0,4");
+        .attr("d", "M0,-4L8,0L0,4")
 
     // Render country outlines
     projection = d3.geoMercator().fitSize([width, height], countries);
@@ -188,7 +182,7 @@ function drawPaths() {
                     if (line.start === line.end) {
                         path.attr("marker-end", "url(#arrow2)");
                     } else {
-                        path.attr("marker-end", "url(#arrow)");
+                        path.attr("marker-end", "url(#arrow1)");
                     }
 
                     if (first) {
