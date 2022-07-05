@@ -3,16 +3,29 @@
         <div class="col col-3">
             <div class="border-bottom pb-3">
                 <h5>Country</h5>
-                <select class="selectpicker" data-live-search="true" data-width="100%">
+                <select class="selectpicker" data-live-search="true" data-width="100%" #country (change)="drawPaths()">
                     <optgroup *ngFor="let group of groups" label="{{group.name}}">
-                        <option *ngFor="let team of group.children" value="team">{{team}}</option>
+                        <option *ngFor="let country of group.children" value="{{country}}"
+                            [selected]="country === selectedCountry">{{country}}</option>
                     </optgroup>
                 </select>
+                <div class="form-check pt-1">
+                    <input class="form-check-input" type="checkbox" value="" id="first" checked #first
+                        (change)="drawPaths()">
+                    <label class="form-check-label" for="first">
+                        First place finish
+                    </label>
+                </div>
+                <div class="form-check pt-1">
+                    <input class="form-check-input" type="checkbox" value="" id="second" #second (change)="drawPaths()">
+                    <label class="form-check-label" for="second">
+                        Second place finish
+                    </label>
+                </div>
             </div>
             <h5 class="pt-3">Facts</h5>
             <ul class="list-group">
-                <li class="list-group-item">Population: x</li>
-                <li class="list-group-item">Average age: x</li>
+                <li *ngFor="let fact of facts" class="list-group-item"><b>{{fact.name}}</b>: {{fact.value}}</li>
             </ul>
         </div>
         <div class="map d-flex justify-content-center col"></div>

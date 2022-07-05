@@ -1,3 +1,67 @@
 <div class="container">
-    Schedule
-</div>
+    <div class="row">
+        <div class="col col-3">
+            <div class="pb-3">
+                <h5>Countries</h5>
+                <select class="selectpicker" multiple data-actions-box="true" #countries (change)="updateMatches()">
+                    <optgroup *ngFor="let group of groups" label="{{group.name}}">
+                        <option *ngFor="let country of group.children" value="{{country}}">{{country}}</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="pb-3">
+                <h5>Cities</h5>
+                <select class="selectpicker" multiple data-actions-box="true" #cities (change)="updateMatches()">
+                    <option *ngFor="let city of allCities">{{city}}</option>
+                </select>
+            </div>
+            <div class="pb-3">
+                <h5>Timezone</h5>
+                <select class="selectpicker" (change)="updateMatches()">
+                    <option>Local game time</option>
+                    <option>Computer time</option>
+                    <option>Auckland</option>
+                    <option>Sydney</option>
+                    <option>Perth</option>
+                </select>
+            </div>
+            <div class="pb-3">
+                <h5>Projected finish</h5>
+                <button type="button" class="btn btn-secondary">Configure</button>
+            </div>
+        </div>
+        <div class="col">
+            <div class="float-end">
+                <button type="button" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-download" viewBox="0 0 16 16">
+                        <path
+                            d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                        <path
+                            d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                    </svg>
+                    Download
+                </button>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Home</th>
+                        <th scope="col">Away</th>
+                        <th scope="col">City</th>
+                        <th scope="col">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let match of matches">
+                        <th scope="row">{{match.id}}</th>
+                        <td>{{match.home}}</td>
+                        <td>{{match.away}}</td>
+                        <td>{{match.city}}</td>
+                        <td>{{match.date.toLocaleString()}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>

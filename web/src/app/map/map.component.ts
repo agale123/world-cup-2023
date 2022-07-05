@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import * as d3 from 'd3';
+import { FactService, Fact } from '../fact.service';
 import { City, MatchService } from '../match.service';
+
+declare var $: any;
 
 // Page dimensions
 const WIDTH = 800;
@@ -43,13 +47,29 @@ type Path = { start: City, end: City };
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css'],
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, AfterViewInit {
   groups = this.matchService.getGroups();
+
+  facts: Fact[] = [];
+
+  selectedCountry: string | null;
 
   private g: any;
   private projection: any;
 
-  constructor(private readonly matchService: MatchService) { }
+  @ViewChild('country') country?: ElementRef;
+  @ViewChild('first') first?: ElementRef;
+  @ViewChild('second') second?: ElementRef;
+
+  constructor(private readonly matchService: MatchService,
+    private readonly factService: FactService,
+    route: ActivatedRoute) {
+    this.selectedCountry = route.snapshot.queryParamMap.get('country');
+  }
+
+  ngAfterViewInit(): void {
+    $('.selectpicker').selectpicker();
+  }
 
   /** On initialization, draw the map and cities. */
   ngOnInit(): void {
@@ -113,11 +133,14 @@ export class MapComponent implements OnInit {
   }
 
   /** Render the path for a specific team. */
-  private drawPaths() {
+  drawPaths() {
     // Remove the old path if it exists.
-    d3.selectAll('path.line').remove();
+    d3.selectAll('path.line').interrupt().remove();
 
-    let dests = this.matchService.getCities();
+    // Get data for the selected country.
+    const country = this.country?.nativeElement.value;
+    let dests = this.matchService.getCities(country);
+    this.facts = this.factService.getFacts(country);
 
     let index = -1;
     // This function repeats for each segment in the path to animate the line.
@@ -126,14 +149,26 @@ export class MapComponent implements OnInit {
         return;
       }
 
+      // Reduce the number of playoff paths if needed.
+      const first = this.first?.nativeElement.checked;
+      const second = this.second?.nativeElement.checked;
+      if (!first && !second) {
+        dests = dests.slice(0, 3);
+      } else if (first && !second) {
+        dests = dests.map(dest => isString(dest) ? dest : dest[0] as City);
+      } else if (second && !first) {
+        dests = dests.map(dest => isString(dest) ? dest : dest[1] as City);
+      }
+
+      // Convert list of destinations into pairs of start/end.
       let data: Array<Path>;
-      if ( dests[index] instanceof String && dests[index + 1] instanceof String) {
+      if (isString(dests[index]) && isString(dests[index + 1])) {
         data = [{ start: dests[index], end: dests[index + 1] } as Path];
       } else {
         data = [0, 1].map(i => {
           return {
-            start: typeof dests[index] === 'string' ? dests[index] : dests[index][i],
-            end: typeof dests[index + 1] === 'string' ? dests[index + 1] : dests[index + 1][i]
+            start: isString(dests[index]) ? dests[index] : dests[index][i],
+            end: isString(dests[index + 1]) ? dests[index + 1] : dests[index + 1][i]
           } as Path;
         });
       }
@@ -190,4 +225,8 @@ export class MapComponent implements OnInit {
     };
     repeat();
   }
+}
+
+function isString(value: any) {
+  return typeof value === 'string';
 }
