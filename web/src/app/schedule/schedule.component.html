@@ -82,8 +82,8 @@
                 <tbody>
                     <tr *ngFor="let match of matches">
                         <th scope="row">{{match.id}}</th>
-                        <td>{{countryService.formatCountry(match.home)}}</td>
-                        <td>{{countryService.formatCountry(match.away)}}</td>
+                        <td style="white-space:pre-wrap">{{formatCountry(match.home)}}</td>
+                        <td style="white-space:pre-wrap">{{formatCountry(match.away)}}</td>
                         <td>{{match.city}}</td>
                         <td>{{match.date.toLocaleString()}}</td>
                     </tr>
