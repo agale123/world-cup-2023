@@ -6,7 +6,7 @@
                 <select class="selectpicker" data-live-search="true" data-width="100%" #country (change)="drawPaths()">
                     <optgroup *ngFor="let group of groups" label="{{group.name}}">
                         <option *ngFor="let country of group.children" value="{{country}}"
-                            [selected]="country === selectedCountry">{{country}}</option>
+                            [selected]="country === selectedCountry">{{countryService.formatCountry(country)}}</option>
                     </optgroup>
                 </select>
                 <div class="form-check pt-1">

@@ -3,21 +3,24 @@
         <div class="col col-3">
             <div class="pb-3">
                 <h5>Countries</h5>
-                <select class="selectpicker" multiple data-actions-box="true" #countries (change)="updateMatches()">
+                <select class="selectpicker" multiple data-live-search="true" data-actions-box="true" data-width="100%"
+                    #countries (change)="updateMatches()">
                     <optgroup *ngFor="let group of groups" label="{{group.name}}">
-                        <option *ngFor="let country of group.children" value="{{country}}">{{country}}</option>
+                        <option *ngFor="let country of group.children" value="{{country}}">
+                            {{countryService.formatCountry(country)}}</option>
                     </optgroup>
                 </select>
             </div>
             <div class="pb-3">
                 <h5>Cities</h5>
-                <select class="selectpicker" multiple data-actions-box="true" #cities (change)="updateMatches()">
+                <select class="selectpicker" multiple data-live-search="true" data-actions-box="true" data-width="100%"
+                    #cities (change)="updateMatches()">
                     <option *ngFor="let city of allCities">{{city}}</option>
                 </select>
             </div>
             <div class="pb-3">
                 <h5>Timezone</h5>
-                <select class="selectpicker" (change)="updateMatches()">
+                <select class="selectpicker" data-width="100%" (change)="updateMatches()">
                     <option>Local game time</option>
                     <option>Computer time</option>
                     <option>Auckland</option>
@@ -27,7 +30,30 @@
             </div>
             <div class="pb-3">
                 <h5>Projected finish</h5>
-                <button type="button" class="btn btn-secondary">Configure</button>
+
+                <ul class="list-group">
+                    <li *ngFor="let projection of projected" class="list-group-item">
+                        {{countryService.formatCountry(projection.country)}}: {{projection.position}}
+                        <button type="button" class="btn-close float-end" aria-label="Close"
+                            (click)="removeProjection(projection)"></button>
+                    </li>
+                </ul>
+
+                <div class="mt-1">Country</div>
+                <select class="selectpicker" data-live-search="true" data-width="100%" #country>
+                    <optgroup *ngFor="let group of groups" label="{{group.name}}">
+                        <option *ngFor="let country of group.children" value="{{country}}">
+                            {{countryService.formatCountry(country)}}</option>
+                    </optgroup>
+                </select>
+                <div class="mt-1">Position</div>
+                <select class="selectpicker" data-live-search="true" data-width="100%" #position>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+                <div class="d-grid d-md-flex justify-content-md-end">
+                    <button type="button" class="btn btn-secondary mt-2" (click)="addProjection()">Save</button>
+                </div>
             </div>
         </div>
         <div class="col">
@@ -56,8 +82,8 @@
                 <tbody>
                     <tr *ngFor="let match of matches">
                         <th scope="row">{{match.id}}</th>
-                        <td>{{match.home}}</td>
-                        <td>{{match.away}}</td>
+                        <td>{{countryService.formatCountry(match.home)}}</td>
+                        <td>{{countryService.formatCountry(match.away)}}</td>
                         <td>{{match.city}}</td>
                         <td>{{match.date.toLocaleString()}}</td>
                     </tr>

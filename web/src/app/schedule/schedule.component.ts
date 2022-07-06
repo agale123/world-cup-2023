@@ -1,7 +1,13 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { CountryService } from '../country.service';
 import { Match, MatchService } from '../match.service';
 
 declare var $: any;
+
+interface Projection {
+  country: string;
+  position: number;
+}
 
 @Component({
   selector: 'app-schedule',
@@ -12,15 +18,33 @@ export class ScheduleComponent implements AfterViewInit {
 
   @ViewChild('countries') countries?: ElementRef;
   @ViewChild('cities') cities?: ElementRef;
+  @ViewChild('country') country?: ElementRef;
+  @ViewChild('position') position?: ElementRef;
 
   matches: Match[] = [];
+
+  // TODO(agale): Apply projections to the table.
+  projected: Projection[] = [];
 
   readonly allCities = this.matchService.getAllCities();
   readonly groups = this.matchService.getGroups();
 
-  constructor(private readonly matchService: MatchService) {
+  constructor(private readonly matchService: MatchService, readonly countryService: CountryService) {
   }
 
+  addProjection() {
+    const country = this.country?.nativeElement.value;
+    const position = this.position?.nativeElement.value;
+    this.projected = this.projected
+      .filter(p => p.country !== country)
+      .filter(p => p.position !== position || p.country.charAt(0) !== country.charAt(0));
+    this.projected.push({ country, position });
+  }
+
+  removeProjection(projection: Projection) {
+    this.projected = this.projected
+      .filter(p => p.country !== projection.country || p.position !== projection.position);
+  }
 
   updateMatches() {
     const countries = [...this.countries?.nativeElement.options]

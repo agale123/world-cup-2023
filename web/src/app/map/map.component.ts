@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as d3 from 'd3';
+import { CountryService } from '../country.service';
 import { FactService, Fact } from '../fact.service';
 import { City, MatchService } from '../match.service';
 
@@ -63,7 +64,8 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   constructor(private readonly matchService: MatchService,
     private readonly factService: FactService,
-    route: ActivatedRoute) {
+    route: ActivatedRoute,
+    readonly countryService: CountryService) {
     this.selectedCountry = route.snapshot.queryParamMap.get('country');
   }
 

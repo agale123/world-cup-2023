@@ -38,7 +38,6 @@ export class MatchService {
     return ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map(i => {
       return {
         name: `Group ${i}`,
-        // TODO(agale): Map from country codes to actual countries.
         children: [1, 2, 3, 4].map(j => `${i}${j}`),
       };
     });
@@ -66,6 +65,34 @@ export class MatchService {
         home: 'A1',
         away: 'A3',
         city: 'Sydney',
+        date: new Date(),
+      },
+      {
+        id: 4,
+        home: '1A',
+        away: '2B',
+        city: 'Dunedin',
+        date: new Date(),
+      },
+      {
+        id: 5,
+        home: '1B',
+        away: '2A',
+        city: 'Sydney',
+        date: new Date(),
+      },
+      {
+        id: 6,
+        home: 'W4',
+        away: 'W5',
+        city: 'Sydney',
+        date: new Date(),
+      },
+      {
+        id: 7,
+        home: 'L4',
+        away: 'L5',
+        city: 'Melbourne',
         date: new Date(),
       },
     ];
