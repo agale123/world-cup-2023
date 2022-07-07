@@ -20,12 +20,13 @@
             </div>
             <div class="pb-3">
                 <h5>Timezone</h5>
-                <select class="selectpicker" data-width="100%" (change)="updateMatches()">
-                    <option>Local game time</option>
-                    <option>Computer time</option>
-                    <option>Auckland</option>
-                    <option>Sydney</option>
-                    <option>Perth</option>
+                <select class="selectpicker" data-width="100%" #timezone (change)="updateMatches()">
+                    <option value="local">Local game time</option>
+                    <option value="computer">Computer time</option>
+                    <option value="Pacific/Auckland">New Zealand</option>
+                    <option value="Australia/Sydney">Sydney/Melbourne/Brisbane</option>
+                    <option value="Australia/Adelaide">Adelaide</option>
+                    <option value="Australia/Perth">Perth</option>
                 </select>
             </div>
             <div class="pb-3">
@@ -85,7 +86,7 @@
                         <td style="white-space:pre-wrap">{{formatCountry(match.home)}}</td>
                         <td style="white-space:pre-wrap">{{formatCountry(match.away)}}</td>
                         <td>{{match.city}}</td>
-                        <td>{{match.date.toLocaleString()}}</td>
+                        <td>{{formatDate(match.date, match.city)}}</td>
                     </tr>
                 </tbody>
             </table>

@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { CountryService } from '../country.service';
-import { Match, MatchService } from '../match.service';
+import { City, Match, MatchService } from '../match.service';
 
 declare var $: any;
 
@@ -8,6 +8,18 @@ interface Projection {
   country: string;
   position: number;
 }
+
+const TIMEZONE_MAP: {[key: string]: string} = {
+  'Adelaide': 'Australia/Adelaide',
+  'Auckland': 'Pacific/Auckland',
+  'Brisbane': 'Australia/Brisbane',
+  'Dunedin': 'Pacific/Auckland',
+  'Hamilton': 'Pacific/Auckland',
+  'Melbourne': 'Australia/Melbourne',
+  'Perth': 'Australia/Perth',
+  'Sydney': 'Australia/Sydney',
+  'Wellington': 'Pacific/Auckland',
+};
 
 @Component({
   selector: 'app-schedule',
@@ -20,6 +32,7 @@ export class ScheduleComponent implements AfterViewInit {
   @ViewChild('cities') cities?: ElementRef;
   @ViewChild('country') country?: ElementRef;
   @ViewChild('position') position?: ElementRef;
+  @ViewChild('timezone') timezone?: ElementRef;
 
   matches: Match[] = [];
 
@@ -88,19 +101,30 @@ export class ScheduleComponent implements AfterViewInit {
   }
 
   formatCountry(country: string) {
-    console.log(country);
     if (country in this.formatMatchMap) {
       const matched = this.formatMatchMap[country];
       const matchedProjections =
         this.projected.filter(p => {
           return matched.includes(`${p.position}${p.country.charAt(0)}`);
         });
-      console.log(matchedProjections);
       if (matchedProjections.length > 0) {
         return matchedProjections.map(p => this.countryService.formatCountry(p.country)).join('\n');
       }
     }
     return this.countryService.formatCountry(country);
+  }
+
+  formatDate(date: Date, city: string) {
+    const selected = this.timezone?.nativeElement.value;
+    let timeZone;
+    if (selected === 'local') {
+      timeZone = TIMEZONE_MAP[city];
+    } else if (selected === 'computer') {
+      timeZone = undefined;
+    } else {
+      timeZone = selected;
+    }
+    return date.toLocaleString(undefined, { timeZone, dateStyle: 'medium', timeStyle: 'short' });
   }
 
   ngAfterViewInit(): void {
