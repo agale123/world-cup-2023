@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as d3 from 'd3';
-import { CountryService } from '../country.service';
+import { CITIES, CountryService } from '../country.service';
 import { FactService, Fact } from '../fact.service';
 import { City, MatchService } from '../match.service';
 
@@ -16,18 +16,6 @@ const BLUE = '#0099FF';
 const GREEN = '#009645';
 const YELLOW = '#FCC82F';
 const RED = '#FD5211';
-
-const CITIES = {
-  'Adelaide': [138.6007, -34.9285],
-  'Auckland': [174.6645, -36.7509],
-  'Brisbane': [153.0260, -27.4705],
-  'Dunedin': [170.5006, -45.8795],
-  'Hamilton': [175.2528, -37.9826],
-  'Melbourne': [144.9631, -37.8136],
-  'Perth': [115.8613, -31.9523],
-  'Sydney': [151.2093, -33.8688],
-  'Wellington': [174.7787, -41.2924],
-};
 
 const OFFSETS = {
   'Adelaide': [-70, 20],
