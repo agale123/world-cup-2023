@@ -9,18 +9,6 @@ interface Projection {
   position: number;
 }
 
-const TIMEZONE_MAP: {[key: string]: string} = {
-  'Adelaide': 'Australia/Adelaide',
-  'Auckland': 'Pacific/Auckland',
-  'Brisbane': 'Australia/Brisbane',
-  'Dunedin': 'Pacific/Auckland',
-  'Hamilton': 'Pacific/Auckland',
-  'Melbourne': 'Australia/Melbourne',
-  'Perth': 'Australia/Perth',
-  'Sydney': 'Australia/Sydney',
-  'Wellington': 'Pacific/Auckland',
-};
-
 @Component({
   selector: 'app-schedule',
   templateUrl: './schedule.component.html',
@@ -118,7 +106,7 @@ export class ScheduleComponent implements AfterViewInit {
     const selected = this.timezone?.nativeElement.value;
     let timeZone;
     if (selected === 'local') {
-      timeZone = TIMEZONE_MAP[city];
+      return this.matchService.formatDate(date, city);
     } else if (selected === 'computer') {
       timeZone = undefined;
     } else {
