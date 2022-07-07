@@ -12,11 +12,12 @@ export class FactService {
 
   constructor() { }
 
-  // TODO(agale): Populate facts for each country
+  // TODO(agale): Populate facts for each country. Ideas include: number of past
+  // tournaments, best finish, wins, FIFA rank, population.
   getFacts(country: string): Fact[] {
     return [
-      {name: 'Population', value: 'x'},
-      {name: 'Wins', value: 'x'},
+      { name: 'Population', value: 'x' },
+      { name: 'Wins', value: 'x' },
     ]
   }
 }

@@ -58,7 +58,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="float-end">
+            <div class="mb-2 d-flex justify-content-end">
                 <button type="button" class="btn btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-download" viewBox="0 0 16 16">
@@ -70,25 +70,27 @@
                     Download
                 </button>
             </div>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Home</th>
-                        <th scope="col">Away</th>
-                        <th scope="col">City</th>
-                        <th scope="col">Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let match of matches">
-                        <th scope="row">{{match.id}}</th>
-                        <td style="white-space:pre-wrap">{{formatCountry(match.home)}}</td>
-                        <td style="white-space:pre-wrap">{{formatCountry(match.away)}}</td>
-                        <td>{{match.city}}</td>
-                        <td>{{formatDate(match.date, match.city)}}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-wrapper">
+                <table class="table table-striped">
+                    <thead class="sticky-top bg-white">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Home</th>
+                            <th scope="col">Away</th>
+                            <th scope="col">City</th>
+                            <th scope="col">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let match of matches">
+                            <th scope="row">{{match.id}}</th>
+                            <td style="white-space:pre-wrap">{{formatCountry(match.home)}}</td>
+                            <td style="white-space:pre-wrap">{{formatCountry(match.away)}}</td>
+                            <td>{{match.city}}</td>
+                            <td>{{formatDate(match.date, match.city)}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
