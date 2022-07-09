@@ -66,6 +66,20 @@ export class ScheduleComponent implements AfterViewInit {
       .filter(p => p.country !== projection.country || p.position !== projection.position);
   }
 
+  private getMatchedProjections(country: string) {
+    if (country in this.formatMatchMap) {
+      const matched = this.formatMatchMap[country];
+      const matchedProjections =
+        this.projected.filter(p => {
+          return matched.includes(`${p.position}${p.country.charAt(0)}`);
+        });
+      if (matchedProjections.length > 0) {
+        return matchedProjections.map(p => p.country);
+      }
+    }
+    return [country];
+  }
+
   updateMatches() {
     const countries = [...this.countries?.nativeElement.options]
       .filter((opt: HTMLOptionElement) => opt.selected)
@@ -77,7 +91,10 @@ export class ScheduleComponent implements AfterViewInit {
       if (countries.length === 0) {
         return true;
       }
-      return countries.some((country: string) => match.away.includes(country) || match.home.includes(country));
+      return countries.some((country: string) => {
+        return this.getMatchedProjections(match.away).includes(country)
+          || this.getMatchedProjections(match.home).includes(country);
+      });
     }).filter(match => {
       if (cities.length === 0) {
         return true;
@@ -88,18 +105,12 @@ export class ScheduleComponent implements AfterViewInit {
     this.changeDetector.detectChanges();
   }
 
+
+
   formatCountry(country: string) {
-    if (country in this.formatMatchMap) {
-      const matched = this.formatMatchMap[country];
-      const matchedProjections =
-        this.projected.filter(p => {
-          return matched.includes(`${p.position}${p.country.charAt(0)}`);
-        });
-      if (matchedProjections.length > 0) {
-        return matchedProjections.map(p => this.countryService.formatCountry(p.country)).join('\n');
-      }
-    }
-    return this.countryService.formatCountry(country);
+    return this.getMatchedProjections(country)
+      .map(c => this.countryService.formatCountry(c))
+      .join('\n');
   }
 
   formatDate(date: Date, city: string) {
