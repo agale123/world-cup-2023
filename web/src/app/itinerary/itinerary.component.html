@@ -1,7 +1,52 @@
 <div class="container">
-    <div class="border-bottom pb-3">Itinerary Form</div>
+    <div class="row border-bottom pb-3 ">
+        <div class="col col-3">
+            <div class="mb-3">
+                Select the countries you are interested in watching and how open you are to travelling further to follow
+                those countries to plan an itinerary.
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary mt-2" (click)="generateItinerary()">Generate
+                    itinerary</button>
+            </div>
+        </div>
+        <div class="col">
+            <div class="mb-3">
+                <div class="d-inline me-1"><b>Travel preference</b>: Less travel</div>
+                <input type="range" class="form-range me-2" min="1" max="5" value="3" step="1" style="width: 100px; height: 8px;"
+                    #travel>
+                <div class="d-inline me-3">More travel</div>
+            </div>
+            <div class="d-inline">
+                <div class="d-inline me-1"><b>Country</b>: </div>
+                <select class="selectpicker me-3" data-live-search="true" #country>
+                    <optgroup *ngFor="let group of groups" label="{{group.name}}">
+                        <option *ngFor="let country of group.children" value="{{country}}">
+                            {{countryService.formatCountry(country)}}</option>
+                    </optgroup>
+                </select>
+                <div class="d-inline me-1"><b>Weight</b>: 1</div>
+                <input type="range" class="form-range me-2" min="1" max="5" step="1" style="width: 100px; height: 8px;"
+                    #weight>
+                <div class="d-inline me-3">5</div>
+                <div class="d-inline">
+                    <button type="button" class="btn btn-secondary" (click)="addPreference()">Add Country</button>
+                </div>
+            </div>
+            <div class="mt-2">
+                <ul class="list-group">
+                    <li *ngFor="let preference of preferences" class="list-group-item" style="width: 250px">
+                        {{countryService.formatCountry(preference.country)}}: {{preference.weight}}
+                        <button type="button" class="btn-close ms-2 float-end" aria-label="Close"
+                            (click)="removePreference(preference)"></button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-    <div class="row pt-3">
+
+    <div class="row pt-3" *ngIf="matches">
         <div class="col col-3">
             <h4>Trip Summary</h4>
             <div class="pb-2"><b>Distance</b>: {{getDistance()}} km</div>
@@ -12,7 +57,7 @@
         <div class="col">
             <div class="table-wrapper">
                 <table class="table table-striped">
-                    <thead class="sticky-top bg-white">
+                    <thead class="bg-white">
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Home</th>
@@ -34,3 +79,4 @@
             </div>
         </div>
     </div>
+</div>

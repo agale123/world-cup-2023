@@ -1,10 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CITIES, CountryService } from '../country.service';
 import { City, Match, MatchService } from '../match.service';
 import * as d3 from 'd3';
 
 const BLUE = '#0099FF';
 const GREEN = '#009645';
+
+interface Preference {
+  country: string;
+  weight: number;
+}
 
 @Component({
   selector: 'app-itinerary',
@@ -13,9 +18,30 @@ const GREEN = '#009645';
 })
 export class ItineraryComponent implements OnInit {
 
-  matches: Match[] = this.matchService.getMatches().filter(m => m.id <= 8);
+  @ViewChild('country') country?: ElementRef;
+  @ViewChild('weight') weight?: ElementRef;
+  @ViewChild('travel') travel?: ElementRef;
 
-  constructor(private readonly countryService: CountryService, private readonly matchService: MatchService) { }
+  readonly groups = this.matchService.getGroups();
+
+  matches: Match[] | null = null;
+
+  preferences: Preference[] = [];
+
+  constructor(readonly countryService: CountryService,
+    private readonly matchService: MatchService) { }
+
+  removePreference(preference: Preference) {
+    this.preferences = this.preferences
+      .filter(p => p.country !== preference.country);
+  }
+
+  addPreference() {
+    const country = this.country?.nativeElement.value;
+    const weight = this.weight?.nativeElement.value;
+    this.removePreference({ country, weight });
+    this.preferences.push({ country, weight });
+  }
 
   formatCountry(country: string) {
     return this.countryService.formatCountry(country);
@@ -26,7 +52,7 @@ export class ItineraryComponent implements OnInit {
   }
 
   getCities() {
-    return Object.entries(this.matches.reduce(
+    return Object.entries((this.matches || []).reduce(
       (acc: { [key: string]: number }, o: Match) => {
         acc[o.city] = (acc[o.city] || 0) + 1
         return acc;
@@ -36,7 +62,7 @@ export class ItineraryComponent implements OnInit {
   }
 
   getCountries() {
-    return Object.entries(this.matches.reduce(
+    return Object.entries((this.matches || []).reduce(
       (acc: { [key: string]: number }, o: Match) => {
         acc[o.home] = (acc[o.home] || 0) + 1;
         acc[o.away] = (acc[o.away] || 0) + 1;
@@ -47,6 +73,9 @@ export class ItineraryComponent implements OnInit {
   }
 
   getDistance() {
+    if (!this.matches) {
+      return 0;
+    }
     let dist = 0;
     for (let i = 0; i < this.matches.length - 1; i++) {
       dist += calcDistance(this.matches[i].city, this.matches[i + 1].city);
@@ -54,11 +83,33 @@ export class ItineraryComponent implements OnInit {
     return Math.round(dist);
   }
 
+  generateItinerary() {
+    const travel = this.travel?.nativeElement.value;
+
+    // Generate itinerary
+    console.log(`Generating itinerary with travel: ${travel} and prefs:`);
+    console.log(this.preferences);
+    this.matches = this.matchService.getMatches().filter(m => m.id <= 8);
+
+    // Draw the map after the itinerary is generated
+    if (this.mapDrawn) {
+      this.drawCities();
+    } else {
+      this.drawMap().then(() => this.drawCities());
+    }
+  }
+
   private g: any;
   private projection: any;
 
   ngOnInit(): void {
-    d3.json('../assets/map.geojson').then((outlines: any) => {
+
+  }
+
+  mapDrawn = false;
+
+  private drawMap() {
+    return d3.json('../assets/map.geojson').then((outlines: any) => {
       const height = 200;
       const width = document.getElementsByClassName("map")[0].clientWidth;
 
@@ -79,13 +130,13 @@ export class ItineraryComponent implements OnInit {
         .style('stroke', BLUE)
         .style('fill', 'white');
 
-      this.drawCities();
+      this.mapDrawn = true;
     });
   }
 
   private drawCities() {
     const counts: { [key: string]: number } = {};
-    for (const match of this.matches) {
+    for (const match of this.matches || []) {
       counts[match.city] = counts[match.city] ? counts[match.city] + 1 : 1;
     }
     let dots = this.g.selectAll('g')
@@ -97,7 +148,7 @@ export class ItineraryComponent implements OnInit {
     dots.append('circle')
       .attr('cx', (d: City) => this.projection(CITIES[d])[0])
       .attr('cy', (d: City) => this.projection(CITIES[d])[1])
-      .attr('r', (d: City) => `${counts[d] * 4}px`)
+      .attr('r', (d: City) => `${counts[d] * 4 || 0}px`)
       .style('fill', GREEN)
       .append("svg:title")
       .text((d: City) => d);
