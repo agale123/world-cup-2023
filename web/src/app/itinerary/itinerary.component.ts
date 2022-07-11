@@ -160,7 +160,6 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
   private preferenceMap: { [key: string]: number } = {};
 
   generateItinerary() {
-    const travel = this.travel?.nativeElement.value;
     this.preferenceMap = this.preferences.reduce((map: { [key: string]: number }, obj) => {
       map[obj.country] = obj.weight;
       return map
@@ -173,7 +172,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
     const dims = Array(15).fill(optimjs.Categorical([...this.cities, null]));
 
     // Powell method can be applied to zero order unconstrained optimization
-    let solution = optimjs.rs_minimize(this.score.bind(this), dims, 2640);
+    let solution = optimjs.rs_minimize(this.score.bind(this), dims, 10000);
     console.log(solution);
 
     this.matches = this.matchService.getMatches().filter(m => {
@@ -191,6 +190,9 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
   }
 
   score(v: Array<City | null>) {
+    // This will become a multiplier for the travel cost.
+    const travelPref = 6 - this.travel?.nativeElement.value;
+
     let result = 0.0;
     // City for the previous day
     let prev = null;
@@ -199,7 +201,8 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
     for (let i = 0; i < v.length; i++) {
       // Calculate cost
       let distanceMultiplier = 1.0;
-      const distance = prevNonNull && v[i] !== null ? calcDistance(prevNonNull as City, v[i] as City) : 0;
+      const distance = prevNonNull && v[i] !== null
+        ? calcDistance(prevNonNull as City, v[i] as City) : 0;
       if (v[i] !== null) {
         prevNonNull = v[i];
       }
@@ -209,18 +212,29 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
           distanceMultiplier = 3.0;
         }
       }
-      result += Math.pow(distance * distanceMultiplier, 0.5);
+      result += Math.pow(distance * distanceMultiplier, 0.5) * travelPref;
 
       // Calculate reward
+      const countries: { [key: string]: number } = {};
       if (v[i] !== null) {
         const match = this.matchMap[`${i},${v[i]}`];
-        // Add weights from home & away teams, and default to 0.5 if there is no team preference
         if (match) {
-          const weight = Math.max(
-            (this.preferenceMap[match.home] || 0) + (this.preferenceMap[match.away] || 0),
-            DEFAULT_WEIGHT);
-          result -= weight * REWARD_MULTIPLIER / this.preferences.length;
+          // Count how many matches there are for each team. There will be
+          // diminishing returns for higher numbers of matches.
+          countries[match.home] = (countries[match.home] || 0) + 1;
+          countries[match.away] = (countries[match.away] || 0) + 1;
         }
+      }
+
+      for (const country of Object.keys(countries)) {
+        // Add weights from home & away teams, and default to 0.5 if there
+        // is no team preference.
+        const weight = Math.max(
+          (this.preferenceMap[country] || 0),
+          DEFAULT_WEIGHT);
+        result -= weight * REWARD_MULTIPLIER
+          * Math.pow(countries[country], CITY_POWER)
+          / this.preferences.length;
       }
     }
     return result;
@@ -228,7 +242,8 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
 }
 
 const DEFAULT_WEIGHT = 0.25;
-const REWARD_MULTIPLIER = 100;
+const CITY_POWER = 0.9;
+const REWARD_MULTIPLIER = 500;
 const DISTANCE_CUTOFF = 1000;
 
 function calcDistance(a: City, b: City): number {

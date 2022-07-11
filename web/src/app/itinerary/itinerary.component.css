@@ -1,8 +1,3 @@
-.table-wrapper {
-    max-height: 75vh;
-    overflow-y: auto;
-}
-
 ::ng-deep button[role="combobox"],
 ::ng-deep button[role="combobox"]:hover {
     border: 1px solid rgba(0, 0, 0, .125);
