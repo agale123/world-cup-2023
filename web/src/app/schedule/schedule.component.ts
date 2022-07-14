@@ -1,4 +1,7 @@
+import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { map, Observable } from 'rxjs';
 import { CountryService } from '../country.service';
 import { City, Match, MatchService } from '../match.service';
 
@@ -31,9 +34,13 @@ export class ScheduleComponent implements AfterViewInit {
 
   readonly formatMatchMap: { [key: string]: string[] } = {};
 
+  matchIds: number[] | undefined;
+
   constructor(private readonly matchService: MatchService,
     readonly countryService: CountryService,
-    private readonly changeDetector: ChangeDetectorRef) {
+    private readonly changeDetector: ChangeDetectorRef,
+    activatedRoute: ActivatedRoute,
+    private readonly location: Location) {
     const sortedMatches = this.matchService.getMatches().sort((a, b) => a.id - b.id);
     const matchesMap: { [key: number]: string[] } = {};
     for (const match of sortedMatches) {
@@ -49,7 +56,28 @@ export class ScheduleComponent implements AfterViewInit {
         this.formatMatchMap[match.away] = matchesMap[away];
       }
     }
-    console.log(this.formatMatchMap);
+    activatedRoute.queryParams.pipe(map(params => {
+      const ids = params['matchIds'];
+      this.matchIds = params['matchIds']
+        ? params['matchIds'].split(',').map((i: string) => parseInt(i))
+        : undefined;
+    })).subscribe();
+  }
+
+  clearMatchIds() {
+    this.matchIds = undefined;
+    this.updateMatches();
+    this.location.replaceState("/schedule")
+  }
+
+  copyLink() {
+    if (!this.matches) {
+      return ;
+    }
+    const url = new URL(window.location.href);
+    url.searchParams.set('matchIds', this.matches.map(map => map.id).join(','));
+    url.pathname = '/schedule';
+    navigator.clipboard.writeText(url.toString());
   }
 
   addProjection() {
@@ -100,6 +128,11 @@ export class ScheduleComponent implements AfterViewInit {
         return true;
       }
       return cities.some((city: string) => match.city === city);
+    }).filter(match => {
+      if (!this.matchIds) {
+        return true;
+      }
+      return this.matchIds.includes(match.id);
     });
     // Need to render the updated matches.
     this.changeDetector.detectChanges();

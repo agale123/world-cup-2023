@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { CITIES, CountryService } from '../country.service';
 import { City, Match, MatchService } from '../match.service';
 import * as d3 from 'd3';
+import { Router } from '@angular/router';
 
 declare var $: any;
 declare var optimjs: any;
@@ -35,10 +36,21 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
   preferences: Preference[] = [];
 
   constructor(readonly countryService: CountryService,
-    private readonly matchService: MatchService) { }
+    private readonly matchService: MatchService,
+    private readonly router: Router) { }
 
   ngAfterViewInit(): void {
     $('.selectpicker').selectpicker();
+  }
+
+  copyLink() {
+    if (!this.matches) {
+      return ;
+    }
+    const url = new URL(window.location.href);
+    url.searchParams.set('matchIds', this.matches.map(map => map.id).join(','));
+    url.pathname = '/schedule';
+    navigator.clipboard.writeText(url.toString());
   }
 
   removePreference(preference: Preference) {
@@ -172,12 +184,18 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
     const dims = Array(15).fill(optimjs.Categorical([...this.cities, null]));
 
     // Powell method can be applied to zero order unconstrained optimization
-    let solution = optimjs.rs_minimize(this.score.bind(this), dims, 10000);
-    console.log(solution);
+    // TODO(agale): Optimize these parameters.
+    let solution = optimjs.rs_minimize(
+      this.score.bind(this),
+      dims,
+      128,// n_calls (64 default)
+      20,// n_random_starts (13 default) 
+      0.3// mutation_rate (0.1 default) 
+    );
 
+    // TODO(agale): Add the ability to save/share an itinerary.
     this.matches = this.matchService.getMatches().filter(m => {
       const index = Math.round((m.date.getTime() - Date.UTC(2023, 6, 20)) / ONE_DAY);
-      console.log(`${index} ${solution.best_x[index]} ${m.id} ${m.city}`)
       return solution.best_x[index] === m.city;
     });
 
@@ -225,6 +243,8 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
           countries[match.away] = (countries[match.away] || 0) + 1;
         }
       }
+
+      // TODO(agale): Add country preferences.
 
       for (const country of Object.keys(countries)) {
         // Add weights from home & away teams, and default to 0.5 if there
