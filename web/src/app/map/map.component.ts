@@ -64,7 +64,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   /** On initialization, draw the map and cities. */
   ngOnInit(): void {
     d3.json('../assets/map.geojson').then((outlines: any) => {
-      const width = Math.min(document.getElementsByClassName("map")[0].clientWidth - 40, WIDTH);
+      const width = Math.min(document.getElementsByClassName("map")[0].clientWidth - 100, WIDTH);
 
       let svg = d3.select('.map').append('svg')
         .attr('width', width + 40)

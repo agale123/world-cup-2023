@@ -10,3 +10,20 @@
 .btn-secondary {
     width: 120px;
 }
+
+.form-range {
+    width: 100px;
+    height: 8px;
+}
+
+@media (max-width: 1000px) {
+    .form-range {
+        width: 60px;
+    }
+}
+
+@media (max-width: 890px) {
+    .btn-secondary {
+        margin-top: 0.5rem;
+    }
+}
