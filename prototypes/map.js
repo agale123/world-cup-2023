@@ -9,27 +9,27 @@ let yellow = '#FCC82F';
 let red = '#FD5211';
 
 let cities = {
-    'Adelaide': [138.6007, -34.9285],
-    'Auckland': [174.6645, -36.7509],
-    'Brisbane': [153.0260, -27.4705],
-    'Dunedin': [170.5006, -45.8795],
-    'Hamilton': [175.2528, -37.9826],
-    'Melbourne': [144.9631, -37.8136],
-    'Perth': [115.8613, -31.9523],
-    'Sydney': [151.2093, -33.8688],
-    'Wellington': [174.7787, -41.2924],
+    'Adelaide, AU': [138.6007, -34.9285],
+    'Auckland, NZ': [174.6645, -36.7509],
+    'Brisbane, AU': [153.0260, -27.4705],
+    'Dunedin, NZ': [170.5006, -45.8795],
+    'Hamilton, NZ': [175.2528, -37.9826],
+    'Melbourne, AU': [144.9631, -37.8136],
+    'Perth, AU': [115.8613, -31.9523],
+    'Sydney, AU': [151.2093, -33.8688],
+    'Wellington, NZ': [174.7787, -41.2924],
 };
 
 let offsets = {
-    'Adelaide': [-70, 20],
-    'Auckland': [10, -10],
-    'Brisbane': [15, -5],
-    'Dunedin': [10, 10],
-    'Hamilton': [10, 15],
-    'Melbourne': [0, 35],
-    'Perth': [0, -15],
-    'Sydney': [15, 10],
-    'Wellington': [10, 25],
+    'Adelaide, AU': [-70, 20],
+    'Auckland, NZ': [10, -10],
+    'Brisbane, AU': [15, -5],
+    'Dunedin, NZ': [10, 10],
+    'Hamilton, NZ': [10, 15],
+    'Melbourne, AU': [0, 35],
+    'Perth, AU': [0, -15],
+    'Sydney, AU': [15, 10],
+    'Wellington, NZ': [10, 25],
 };
 
 let games;
@@ -42,10 +42,10 @@ function getCities(id) {
         .map(game => game.city);
 
     const knockoutStage = [
-        ['Auckland', 'Hamilton'],
-        ['Dunedin', 'Perth'],
-        ['Brisbane', 'Melbourne'],
-        'Sydney',
+        ['Auckland, NZ', 'Hamilton, NZ'],
+        ['Dunedin, NZ', 'Perth, AU'],
+        ['Brisbane, AU', 'Melbourne, AU'],
+        'Sydney, AU',
     ];
     return [...groupStage, ...knockoutStage];
 }

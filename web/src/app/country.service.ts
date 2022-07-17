@@ -37,15 +37,15 @@ const COUNTRIES: {[key: string]: string} = {
 };
 
 export const CITIES = {
-  'Adelaide': [138.6007, -34.9285],
-  'Auckland': [174.6645, -36.7509],
-  'Brisbane': [153.0260, -27.4705],
-  'Dunedin': [170.5006, -45.8795],
-  'Hamilton': [175.2528, -37.9826],
-  'Melbourne': [144.9631, -37.8136],
-  'Perth': [115.8613, -31.9523],
-  'Sydney': [151.2093, -33.8688],
-  'Wellington': [174.7787, -41.2924],
+  'Adelaide, AU': [138.6007, -34.9285],
+  'Auckland, NZ': [174.6645, -36.7509],
+  'Brisbane, AU': [153.0260, -27.4705],
+  'Dunedin, NZ': [170.5006, -45.8795],
+  'Hamilton, NZ': [175.2528, -37.9826],
+  'Melbourne, AU': [144.9631, -37.8136],
+  'Perth, AU': [115.8613, -31.9523],
+  'Sydney, AU': [151.2093, -33.8688],
+  'Wellington, NZ': [174.7787, -41.2924],
 };
 
 @Injectable({

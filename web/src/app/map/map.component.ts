@@ -19,15 +19,15 @@ const YELLOW = '#FCC82F';
 const RED = '#FD5211';
 
 const OFFSETS = {
-  'Adelaide': [-70, 20],
-  'Auckland': [10, -10],
-  'Brisbane': [15, -5],
-  'Dunedin': [10, 10],
-  'Hamilton': [10, 15],
-  'Melbourne': [0, 35],
-  'Perth': [0, -15],
-  'Sydney': [15, 10],
-  'Wellington': [5, 20],
+  'Adelaide, AU': [-70, 20],
+  'Auckland, NZ': [10, -10],
+  'Brisbane, AU': [15, -5],
+  'Dunedin, NZ': [10, 10],
+  'Hamilton, NZ': [10, 15],
+  'Melbourne, AU': [0, 35],
+  'Perth, AU': [0, -15],
+  'Sydney, AU': [15, 10],
+  'Wellington, NZ': [5, 20],
 };
 
 type Path = { start: City, end: City };

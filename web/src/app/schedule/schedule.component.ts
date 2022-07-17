@@ -7,6 +7,7 @@ import { CountryService } from '../country.service';
 import { City, Match, MatchService } from '../match.service';
 
 declare var $: any;
+declare var bootstrap: any;
 
 interface Projection {
   country: string;
@@ -66,6 +67,7 @@ export class ScheduleComponent implements AfterViewInit {
         : undefined;
     })).subscribe();
   }
+
 
   clearMatchIds() {
     this.matchIds = undefined;
@@ -165,6 +167,9 @@ export class ScheduleComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.updateMatches();
     $('.selectpicker').selectpicker();
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = Array.prototype.slice.call(tooltipTriggerList, 0)
+      .map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
   }
 
 }

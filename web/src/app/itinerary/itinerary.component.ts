@@ -13,6 +13,9 @@ const GREEN = '#009645';
 
 const ONE_DAY = 1000 * 60 * 60 * 24;
 
+// 6:00 AM in Auckland on opening day
+const FIRST_DAY = Date.parse('2023-06-20 6:00 GMT+12');
+
 interface CountryPreference {
   country: string;
   weight: number;
@@ -189,7 +192,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
 
   private readonly matchMap =
     this.matchService.getMatches().reduce((map: { [key: string]: Match }, obj) => {
-      const index = Math.round((obj.date.getTime() - Date.UTC(2023, 6, 20)) / ONE_DAY);
+      const index = Math.round((obj.date.getTime() - FIRST_DAY) / ONE_DAY);
       map[`${index},${obj.city}`] = obj;
       return map;
     }, {});
@@ -223,7 +226,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
     );
 
     this.matches = this.matchService.getMatches().filter(m => {
-      const index = Math.round((m.date.getTime() - Date.UTC(2023, 6, 20)) / ONE_DAY);
+      const index = Math.round((m.date.getTime() - FIRST_DAY) / ONE_DAY);
       return solution.best_x[index] === m.city;
     });
 
