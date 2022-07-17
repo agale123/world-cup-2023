@@ -1,5 +1,6 @@
 import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { map, Observable } from 'rxjs';
 import { CountryService } from '../country.service';
@@ -40,7 +41,9 @@ export class ScheduleComponent implements AfterViewInit {
     readonly countryService: CountryService,
     private readonly changeDetector: ChangeDetectorRef,
     activatedRoute: ActivatedRoute,
-    private readonly location: Location) {
+    private readonly location: Location,
+    titleService: Title) {
+    titleService.setTitle('World Cup Explorer - Schedule');
     const sortedMatches = this.matchService.getMatches().sort((a, b) => a.id - b.id);
     const matchesMap: { [key: number]: string[] } = {};
     for (const match of sortedMatches) {
@@ -72,7 +75,7 @@ export class ScheduleComponent implements AfterViewInit {
 
   copyLink() {
     if (!this.matches) {
-      return ;
+      return;
     }
     const url = new URL(window.location.href);
     url.searchParams.set('matchIds', this.matches.map(map => map.id).join(','));

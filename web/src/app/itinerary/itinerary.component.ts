@@ -3,6 +3,7 @@ import { CITIES, CountryService } from '../country.service';
 import { City, Match, MatchService } from '../match.service';
 import * as d3 from 'd3';
 import { Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 
 declare var $: any;
 declare var optimjs: any;
@@ -46,7 +47,10 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
 
   constructor(readonly countryService: CountryService,
     private readonly matchService: MatchService,
-    private readonly router: Router) { }
+    private readonly router: Router,
+    titleService: Title) {
+    titleService.setTitle('World Cup Explorer - Itinerary');
+  }
 
   ngAfterViewInit(): void {
     $('.selectpicker').selectpicker();
@@ -54,7 +58,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
 
   copyLink() {
     if (!this.matches) {
-      return ;
+      return;
     }
     const url = new URL(window.location.href);
     url.searchParams.set('matchIds', this.matches.map(map => map.id).join(','));

@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import * as d3 from 'd3';
 import { CITIES, CountryService } from '../country.service';
@@ -53,7 +54,9 @@ export class MapComponent implements OnInit, AfterViewInit {
   constructor(private readonly matchService: MatchService,
     private readonly factService: FactService,
     route: ActivatedRoute,
-    readonly countryService: CountryService) {
+    readonly countryService: CountryService,
+    titleService: Title) {
+    titleService.setTitle('World Cup Explorer - Map');
     this.selectedCountry = route.snapshot.queryParamMap.get('country');
   }
 
