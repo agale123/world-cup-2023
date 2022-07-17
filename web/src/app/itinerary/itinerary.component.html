@@ -1,9 +1,18 @@
 <div class="container">
-    <div class="row border-bottom pb-3 ">
-        <div class="col col-3">
+    <div class="row border-bottom">
+        <div class="col col-3 pb-3">
             <div class="mb-3">
-                Select the countries you are interested in watching and how open you are to travelling further to follow
-                those countries to plan an itinerary.
+                Select the countries you are interested in watching, cities you want to visit, and how open you are to
+                travelling further to plan an itinerary.
+            </div>
+            <!-- Travel prefs -->
+            <div class="pb-2">
+                <div class="d-inline me-1"><b>Travel preference</b>:</div>
+                <div> Less
+                    <input type="range" class="form-range me-2" min="1" max="5" value="3" step="1"
+                        style="width: 100px; height: 8px;" #travel>
+                    <div class="d-inline me-3">More</div>
+                </div>
             </div>
             <div>
                 <button type="button" class="btn btn-primary mt-2" (click)="generateItinerary()">Generate
@@ -11,36 +20,58 @@
             </div>
         </div>
         <div class="col">
-            <div class="mb-3">
-                <div class="d-inline me-1"><b>Travel preference</b>: Less travel</div>
-                <input type="range" class="form-range me-2" min="1" max="5" value="3" step="1"
-                    style="width: 100px; height: 8px;" #travel>
-                <div class="d-inline me-3">More travel</div>
-            </div>
-            <div class="d-inline">
-                <div class="d-inline me-1"><b>Country</b>: </div>
-                <select class="selectpicker me-3" data-live-search="true" #country>
-                    <optgroup *ngFor="let group of groups" label="{{group.name}}">
-                        <option *ngFor="let country of group.children" value="{{country}}">
-                            {{countryService.formatCountry(country)}}</option>
-                    </optgroup>
-                </select>
-                <div class="d-inline me-1"><b>Weight</b>: 1</div>
-                <input type="range" class="form-range me-2" min="1" max="5" step="1" style="width: 100px; height: 8px;"
-                    #weight>
-                <div class="d-inline me-3">5</div>
+            <!-- Country prefs -->
+            <div class="py-2 border-bottom">
                 <div class="d-inline">
-                    <button type="button" class="btn btn-secondary" (click)="addPreference()">Add Country</button>
+                    <div class="d-inline-block me-1 label"><b>Country</b>: </div>
+                    <select class="selectpicker me-3" data-live-search="true" #country>
+                        <optgroup *ngFor="let group of groups" label="{{group.name}}">
+                            <option *ngFor="let country of group.children" value="{{country}}">
+                                {{countryService.formatCountry(country)}}</option>
+                        </optgroup>
+                    </select>
+                    <div class="d-inline me-1"><b>Weight</b>: 1</div>
+                    <input type="range" class="form-range me-2" min="1" max="5" step="1"
+                        style="width: 100px; height: 8px;" #weight>
+                    <div class="d-inline me-3">5</div>
+                    <div class="d-inline">
+                        <button type="button" class="btn btn-secondary" (click)="addPreference()">Add Country</button>
+                    </div>
+                </div>
+                <div class="">
+                    <ul *ngFor="let preference of countryPreferences" class="list-group d-inline-block mx-1 mt-2">
+                        <li class="list-group-item" style="width: 250px">
+                            {{countryService.formatCountry(preference.country)}}: {{preference.weight}}
+                            <button type="button" class="btn-close ms-2 float-end" aria-label="Close"
+                                (click)="removePreference(preference)"></button>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div class="mt-2">
-                <ul class="list-group">
-                    <li *ngFor="let preference of preferences" class="list-group-item" style="width: 250px">
-                        {{countryService.formatCountry(preference.country)}}: {{preference.weight}}
-                        <button type="button" class="btn-close ms-2 float-end" aria-label="Close"
-                            (click)="removePreference(preference)"></button>
-                    </li>
-                </ul>
+            <!-- City prefs -->
+            <div class="py-2">
+                <div class="d-inline">
+                    <div class="d-inline-block me-1 label"><b>City</b>: </div>
+                    <select class="selectpicker me-3" data-live-search="true" #city>
+                        <option *ngFor="let city of cities" value="{{city}}">{{city}}</option>
+                    </select>
+                    <div class="d-inline me-1"><b>Weight</b>: 1</div>
+                    <input type="range" class="form-range me-2" min="1" max="5" step="1"
+                        style="width: 100px; height: 8px;" #weight2>
+                    <div class="d-inline me-3">5</div>
+                    <div class="d-inline">
+                        <button type="button" class="btn btn-secondary" (click)="addCityPreference()">Add City</button>
+                    </div>
+                </div>
+                <div class="">
+                    <ul *ngFor="let preference of cityPreferences" class="list-group d-inline-block mx-1 mt-2">
+                        <li class="list-group-item" style="width: 250px">
+                            {{preference.city}}: {{preference.weight}}
+                            <button type="button" class="btn-close ms-2 float-end" aria-label="Close"
+                                (click)="removeCityPreference(preference)"></button>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

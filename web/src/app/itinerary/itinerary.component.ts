@@ -12,8 +12,13 @@ const GREEN = '#009645';
 
 const ONE_DAY = 1000 * 60 * 60 * 24;
 
-interface Preference {
+interface CountryPreference {
   country: string;
+  weight: number;
+}
+
+interface CityPreference {
+  city: string;
   weight: number;
 }
 
@@ -26,14 +31,18 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
 
   @ViewChild('country') country?: ElementRef;
   @ViewChild('weight') weight?: ElementRef;
+  @ViewChild('city') city?: ElementRef;
+  @ViewChild('weight2') weight2?: ElementRef;
   @ViewChild('travel') travel?: ElementRef;
 
   readonly groups = this.matchService.getGroups();
-  private readonly cities = this.matchService.getAllCities();
+  readonly cities = this.matchService.getAllCities();
 
   matches: Match[] | null = null;
 
-  preferences: Preference[] = [];
+  countryPreferences: CountryPreference[] = [];
+
+  cityPreferences: CityPreference[] = [];
 
   constructor(readonly countryService: CountryService,
     private readonly matchService: MatchService,
@@ -53,8 +62,8 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
     navigator.clipboard.writeText(url.toString());
   }
 
-  removePreference(preference: Preference) {
-    this.preferences = this.preferences
+  removePreference(preference: CountryPreference) {
+    this.countryPreferences = this.countryPreferences
       .filter(p => p.country !== preference.country);
   }
 
@@ -62,7 +71,19 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
     const country = this.country?.nativeElement.value;
     const weight = this.weight?.nativeElement.value;
     this.removePreference({ country, weight });
-    this.preferences.push({ country, weight });
+    this.countryPreferences.push({ country, weight });
+  }
+
+  removeCityPreference(preference: CityPreference) {
+    this.cityPreferences = this.cityPreferences
+      .filter(p => p.city !== preference.city);
+  }
+
+  addCityPreference() {
+    const city = this.city?.nativeElement.value;
+    const weight = this.weight2?.nativeElement.value;
+    this.removeCityPreference({ city, weight });
+    this.cityPreferences.push({ city, weight });
   }
 
   formatCountry(country: string) {
@@ -170,15 +191,19 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
     }, {});
 
   private preferenceMap: { [key: string]: number } = {};
+  private cityPreferenceMap: { [key: string]: number } = {};
 
   generateItinerary() {
-    this.preferenceMap = this.preferences.reduce((map: { [key: string]: number }, obj) => {
+    this.preferenceMap = this.countryPreferences.reduce((map: { [key: string]: number }, obj) => {
       map[obj.country] = obj.weight;
+      return map
+    }, {});
+    this.cityPreferenceMap = this.cityPreferences.reduce((map: { [key: string]: number }, obj) => {
+      map[obj.city] = obj.weight;
       return map
     }, {});
 
     // Generate itinerary
-    //this.matches = this.matchService.getMatches().filter(m => m.id <= 8);
 
     // There are 15 days of group stage games and each can be a city or null.
     const dims = Array(15).fill(optimjs.Categorical([...this.cities, null]));
@@ -193,7 +218,6 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
       0.3// mutation_rate (0.1 default) 
     );
 
-    // TODO(agale): Add the ability to save/share an itinerary.
     this.matches = this.matchService.getMatches().filter(m => {
       const index = Math.round((m.date.getTime() - Date.UTC(2023, 6, 20)) / ONE_DAY);
       return solution.best_x[index] === m.city;
@@ -227,13 +251,14 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
       if (i > 0) {
         const prev = v[i - 1];
         if (prev !== null && v[i] !== null && distance > DISTANCE_CUTOFF) {
-          distanceMultiplier = 3.0;
+          distanceMultiplier = DISTANCE_MULTIPLIER;
         }
       }
       result += Math.pow(distance * distanceMultiplier, 0.5) * travelPref;
 
       // Calculate reward
       const countries: { [key: string]: number } = {};
+      const cities: { [key: string]: number } = {};
       if (v[i] !== null) {
         const match = this.matchMap[`${i},${v[i]}`];
         if (match) {
@@ -241,10 +266,9 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
           // diminishing returns for higher numbers of matches.
           countries[match.home] = (countries[match.home] || 0) + 1;
           countries[match.away] = (countries[match.away] || 0) + 1;
+          cities[match.city] = (cities[match.city] || 0) + 1;
         }
       }
-
-      // TODO(agale): Add country preferences.
 
       for (const country of Object.keys(countries)) {
         // Add weights from home & away teams, and default to 0.5 if there
@@ -254,7 +278,17 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
           DEFAULT_WEIGHT);
         result -= weight * REWARD_MULTIPLIER
           * Math.pow(countries[country], CITY_POWER)
-          / this.preferences.length;
+          / (this.cityPreferences.length + this.countryPreferences.length);;
+      }
+
+      for (const city of Object.keys(cities)) {
+        // Add weights from cities, and default to 0 if there is no preference.
+        const weight = Math.max(
+          (this.cityPreferenceMap[city] || 0),
+          0);
+        result -= weight * CITY_REWARD_MULTIPLIER
+          * Math.pow(cities[city], CITY_POWER)
+          / (this.cityPreferences.length + this.countryPreferences.length);
       }
     }
     return result;
@@ -264,6 +298,8 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
 const DEFAULT_WEIGHT = 0.25;
 const CITY_POWER = 0.9;
 const REWARD_MULTIPLIER = 500;
+const CITY_REWARD_MULTIPLIER = 400;
+const DISTANCE_MULTIPLIER = 4.0;
 const DISTANCE_CUTOFF = 1000;
 
 function calcDistance(a: City, b: City): number {
