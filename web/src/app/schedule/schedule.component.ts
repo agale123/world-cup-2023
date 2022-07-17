@@ -92,11 +92,13 @@ export class ScheduleComponent implements AfterViewInit {
       .filter(p => p.country !== country)
       .filter(p => p.position !== position || p.country.charAt(0) !== country.charAt(0));
     this.projected.push({ country, position });
+    this.updateMatches();
   }
 
   removeProjection(projection: Projection) {
     this.projected = this.projected
       .filter(p => p.country !== projection.country || p.position !== projection.position);
+    this.updateMatches();
   }
 
   private getMatchedProjections(country: string) {
@@ -146,9 +148,14 @@ export class ScheduleComponent implements AfterViewInit {
 
 
   formatCountry(country: string) {
-    return this.getMatchedProjections(country)
+    const countries = this.getMatchedProjections(country)
       .map(c => this.countryService.formatCountry(c))
       .join('\n');
+    if (['W', '1', '2'].includes(country.slice(0, 1)) && countries !== country) {
+      return `${country}:\n${countries}`;
+    } else {
+      return countries;
+    }
   }
 
   formatDate(date: Date, city: string) {

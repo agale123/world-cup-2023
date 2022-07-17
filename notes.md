@@ -1,8 +1,8 @@
 # User Study #1
 
 [x] Would be helpful to show the country associated with the city
-[] Distinguish group stage from knockout rounds in the schedule
-[] Pick New Zealand: 1 and then change to New Zealand: 2 with a
+[x] Distinguish group stage from knockout rounds in the schedule
+[x] Pick New Zealand: 1 and then change to New Zealand: 2 with a
 New Zealand filter then it shows some rows that don't have New
 Zealand.
 [x] Add ? tooltip that explains what it shows
