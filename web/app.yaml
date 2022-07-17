@@ -1,0 +1,45 @@
+# [START runtime]
+runtime: python27
+threadsafe: yes
+env: standard
+instance_class: F1
+# [END runtime]
+
+handlers:
+
+- url: /favicon\.ico
+  static_files: dist/worldcup/favicon.ico
+  upload: dist/worldcup/favicon.ico
+  secure: always
+  
+- url: /assets/map\.geojson
+  secure: always
+  static_files: dist/worldcup/assets/map.geojson
+  upload: dist/worldcup/assets/map.geojson
+
+- url: /(.*\.(js|map|css|png))$
+  static_files: dist/worldcup/\1
+  upload: dist/worldcup/(.*)
+  secure: always
+
+- url: /(.*)
+  static_files: dist/worldcup/index.html
+  upload: dist/worldcup/index.html
+  secure: always
+
+# Temporary setting to keep gcloud from uploading not required files for deployment
+skip_files:
+- ^node_modules$
+- ^app\.yaml
+- ^README\..*
+- \.gitignore
+- \.angular
+- ^\.git$
+- ^grunt\.js
+- ^src$
+- ^e2e$
+- \.editorconfig
+- ^karma\.config\.js
+- ^package\.json
+- ^protractor\.conf\.js
+- ^tslint\.json
