@@ -27,7 +27,7 @@ const OFFSETS = {
   'Melbourne': [0, 35],
   'Perth': [0, -15],
   'Sydney': [15, 10],
-  'Wellington': [10, 25],
+  'Wellington': [5, 20],
 };
 
 type Path = { start: City, end: City };
@@ -82,7 +82,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         .append('svg:marker')
         .attr('id', (d) => `arrow${d}`)
         .attr('viewBox', '0 -4 8 8')
-        .attr('refX', 10)
+        .attr('refX', 7)
         .attr('markerWidth', 4)
         .attr('markerHeight', 4)
         .attr('orient', (d) => d === 1 ? 'auto' : '330')
@@ -212,9 +212,6 @@ export class MapComponent implements OnInit, AfterViewInit {
             }
           });
       }
-
-      // Bring the city dots in front of the lines.
-      d3.selectAll('.city').raise();
     };
     repeat();
   }
