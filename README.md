@@ -16,7 +16,7 @@ of controlls allows you to see which knockout games a team will play in if they
 finish first or second in their group. So you could see where the US would play
 if they finish first in their group.
 
-<img src="https://github.com/agale123/world-cup-2023/blob/f4acabe93562af94b21e3bf0f3481d3d20e6eb6d/images/schedule.jpg" width="500px">
+<img src="https://github.com/agale123/world-cup-2023/blob/f4acabe93562af94b21e3bf0f3481d3d20e6eb6d/images/schedule.png" width="500px">
 
 ## Map
 
