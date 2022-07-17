@@ -1,6 +1,6 @@
 # 2023 Women's World Cup App
 
-Hosted location: https://world-cup-2023-356601.wn.r.appspot.com/
+Hosted location: https://2023wwc.alisongale.com/
 
 The app will have sections to explore game locations, browse the schedule, and
 plan an itinerary for the tournament. This is a followup of a version I made
