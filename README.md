@@ -16,7 +16,7 @@ of controlls allows you to see which knockout games a team will play in if they
 finish first or second in their group. So you could see where the US would play
 if they finish first in their group.
 
-<img src="https://raw.githubusercontent.com/agale123/world-cup-2023/master/images/schedule.jpg" width="500px">
+<img src="https://github.com/agale123/world-cup-2023/blob/f4acabe93562af94b21e3bf0f3481d3d20e6eb6d/images/schedule.jpg" width="500px">
 
 ## Map
 
@@ -25,7 +25,7 @@ You can also opt to see what their knockout path would be if they finishe first
 or second in their group. Facts about each country are displayed alongside the
 map.
 
-<img src="https://raw.githubusercontent.com/agale123/world-cup-2023/master/images/map.jpg" width="500px">
+<img src="https://github.com/agale123/world-cup-2023/blob/f4acabe93562af94b21e3bf0f3481d3d20e6eb6d/images/map.png" width="500px">
 
 ## Itinerary
 
@@ -35,4 +35,4 @@ see and their relative weight to get a recommended schedule. A summary card
 displays details about the trip. You can copy a link to the schedule to save it
 for later.
 
-<img src="https://raw.githubusercontent.com/agale123/world-cup-2023/master/images/itinerary.jpg" width="500px">
+<img src="https://github.com/agale123/world-cup-2023/blob/f4acabe93562af94b21e3bf0f3481d3d20e6eb6d/images/itinerary.png" width="500px">
