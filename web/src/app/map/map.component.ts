@@ -88,7 +88,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         .attr('d', 'M0,-4L8,0L0,4')
 
       // Render country outlines
-      this.projection = d3.geoMercator().fitSize([width, HEIGHT], outlines);
+      this.projection = d3.geoMercator().fitSize([width - 20, HEIGHT], outlines);
       let path = d3.geoPath().projection(this.projection);
       this.g.selectAll('path')
         .data(outlines.features)
