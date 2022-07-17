@@ -3,7 +3,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } fr
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { map, Observable } from 'rxjs';
-import { CountryService } from '../country.service';
+import { CountryService, FLAGS } from '../country.service';
 import { City, Match, MatchService } from '../match.service';
 
 declare var $: any;
@@ -155,6 +155,14 @@ export class ScheduleComponent implements AfterViewInit {
       return `${country}:\n${countries}`;
     } else {
       return countries;
+    }
+  }
+
+  formatFlag(country: string) {
+    if (['W', '1', '2'].includes(country.slice(0, 1))) {
+      return '';
+    } else {
+      return FLAGS[this.countryService.formatCountry(country)];
     }
   }
 

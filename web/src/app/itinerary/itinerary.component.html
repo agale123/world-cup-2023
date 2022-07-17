@@ -126,8 +126,8 @@
                     <tbody>
                         <tr *ngFor="let match of matches">
                             <th scope="row">{{match.id}}</th>
-                            <td style="white-space:pre-wrap">{{formatCountry(match.home)}}</td>
-                            <td style="white-space:pre-wrap">{{formatCountry(match.away)}}</td>
+                            <td style="white-space:pre-wrap">{{formatCountry(match.home)}} <span class="flag">{{formatFlag(match.home)}}</span></td>
+                            <td style="white-space:pre-wrap">{{formatCountry(match.away)}} <span class="flag">{{formatFlag(match.away)}}</span></td>
                             <td>{{match.city}}</td>
                             <td>{{formatDate(match.date, match.city)}}</td>
                         </tr>

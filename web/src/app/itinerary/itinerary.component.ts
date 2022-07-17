@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { CITIES, CountryService } from '../country.service';
+import { CITIES, CountryService, FLAGS } from '../country.service';
 import { City, Match, MatchService } from '../match.service';
 import * as d3 from 'd3';
 import { Router } from '@angular/router';
@@ -95,6 +95,10 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
 
   formatCountry(country: string) {
     return this.countryService.formatCountry(country);
+  }
+
+  formatFlag(country: string) {
+    return FLAGS[this.countryService.formatCountry(country)];
   }
 
   formatDate(date: Date, city: string) {
