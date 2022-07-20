@@ -12,7 +12,8 @@
                 </ul>
             </div>
             <div class="pb-2 pt-1 border-bottom">
-                <h5>Countries</h5>
+                <h5>Filter</h5>
+                <div>Teams</div>
                 <select class="selectpicker" multiple data-live-search="true" data-actions-box="true" data-width="100%"
                     #countries (change)="updateMatches()">
                     <optgroup *ngFor="let group of groups" label="{{group.name}}">
@@ -20,9 +21,7 @@
                             {{countryService.formatCountry(country)}}</option>
                     </optgroup>
                 </select>
-            </div>
-            <div class="pb-2 pt-1 border-bottom">
-                <h5>Cities</h5>
+                <div>Cities</div>
                 <select class="selectpicker" multiple data-live-search="true" data-actions-box="true" data-width="100%"
                     #cities (change)="updateMatches()">
                     <option *ngFor="let city of allCities">{{city}}</option>
@@ -39,7 +38,7 @@
                     <option value="Australia/Perth">Perth</option>
                 </select>
             </div>
-            <div class="pb-3">
+            <div class="pb-3 pt-1">
                 <div>
                     <h5 class="d-inline">Projected finish</h5>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -59,7 +58,7 @@
                     </li>
                 </ul>
 
-                <div class="mt-1">Country</div>
+                <div class="mt-1">Team</div>
                 <select class="selectpicker" data-live-search="true" data-width="100%" #country>
                     <optgroup *ngFor="let group of groups" label="{{group.name}}">
                         <option *ngFor="let country of group.children" value="{{country}}">
@@ -104,8 +103,8 @@
                     <tbody>
                         <tr *ngFor="let match of matches">
                             <th scope="row">{{match.id}}</th>
-                            <td style="white-space:pre-wrap">{{formatCountry(match.home)}} <span class="flag">{{formatFlag(match.home)}}</span></td>
-                            <td style="white-space:pre-wrap">{{formatCountry(match.away)}} <span class="flag">{{formatFlag(match.away)}}</span></td>
+                            <td style="white-space:pre-wrap"><app-team [value]="match.home" [projections]="getMatchedProjections(match.home)"></app-team></td>
+                            <td style="white-space:pre-wrap"><app-team [value]="match.away" [projections]="getMatchedProjections(match.away)"></app-team></td>
                             <td>{{match.city}}</td>
                             <td>{{formatDate(match.date, match.city)}}</td>
                         </tr>

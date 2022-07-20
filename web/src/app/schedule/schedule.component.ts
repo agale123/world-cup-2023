@@ -101,7 +101,7 @@ export class ScheduleComponent implements AfterViewInit {
     this.updateMatches();
   }
 
-  private getMatchedProjections(country: string) {
+  getMatchedProjections(country: string) {
     if (country in this.formatMatchMap) {
       const matched = this.formatMatchMap[country];
       const matchedProjections =
@@ -145,8 +145,6 @@ export class ScheduleComponent implements AfterViewInit {
     this.changeDetector.detectChanges();
   }
 
-
-
   formatCountry(country: string) {
     const countries = this.getMatchedProjections(country)
       .map(c => this.countryService.formatCountry(c))
@@ -155,14 +153,6 @@ export class ScheduleComponent implements AfterViewInit {
       return `${country}:\n${countries}`;
     } else {
       return countries;
-    }
-  }
-
-  formatFlag(country: string) {
-    if (['W', '1', '2'].includes(country.slice(0, 1))) {
-      return '';
-    } else {
-      return FLAGS[this.countryService.formatCountry(country)];
     }
   }
 

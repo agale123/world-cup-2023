@@ -1,0 +1,9 @@
+<div>
+    {{countryService.formatCountry(value) + (showProjections() ? ':' : '')}}
+    <span class="flag ps-1">{{formatFlag(value)}}</span>
+<div *ngIf="showProjections()">
+    <div *ngFor="let p of projections">
+        {{countryService.formatCountry(p)}}
+        <span class="flag ps-1">{{formatFlag(p)}}</span>
+    </div>
+</div>

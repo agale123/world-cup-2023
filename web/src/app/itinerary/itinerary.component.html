@@ -2,7 +2,7 @@
     <div class="row border-bottom">
         <div class="col col-3 pb-3">
             <div class="mb-3">
-                Select the countries you are interested in watching, cities you want to visit, and how open you are to
+                Select the teams you are interested in watching, cities you want to visit, and how open you are to
                 travelling further to plan an itinerary. Match times are in local time.
             </div>
             <!-- Travel prefs -->
@@ -23,7 +23,7 @@
             <div class="py-2 border-bottom">
                 <div class="d-inline">
                     <span>
-                        <div class="d-inline-block me-1 label"><b>Country</b>: </div>
+                        <div class="d-inline-block me-1 label"><b>Team</b>: </div>
                         <select class="selectpicker me-3" data-live-search="true" #country>
                             <optgroup *ngFor="let group of groups" label="{{group.name}}">
                                 <option *ngFor="let country of group.children" value="{{country}}">
@@ -40,7 +40,7 @@
                     <span>
                         <div class="d-inline">
                             <button type="button" class="btn btn-secondary" (click)="addPreference()">Add
-                                Country</button>
+                                Team</button>
                         </div>
                     </span>
                 </div>
@@ -126,8 +126,8 @@
                     <tbody>
                         <tr *ngFor="let match of matches">
                             <th scope="row">{{match.id}}</th>
-                            <td style="white-space:pre-wrap">{{formatCountry(match.home)}} <span class="flag">{{formatFlag(match.home)}}</span></td>
-                            <td style="white-space:pre-wrap">{{formatCountry(match.away)}} <span class="flag">{{formatFlag(match.away)}}</span></td>
+                            <td style="white-space:pre-wrap"><app-team [value]="match.home" [projections]="[]"></app-team></td>
+                            <td style="white-space:pre-wrap"><app-team [value]="match.away" [projections]="[]"></app-team></td>
                             <td>{{match.city}}</td>
                             <td>{{formatDate(match.date, match.city)}}</td>
                         </tr>

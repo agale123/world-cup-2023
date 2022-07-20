@@ -97,10 +97,6 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
     return this.countryService.formatCountry(country);
   }
 
-  formatFlag(country: string) {
-    return FLAGS[this.countryService.formatCountry(country)];
-  }
-
   formatDate(date: Date, city: string) {
     return this.matchService.formatDate(date, city);
   }

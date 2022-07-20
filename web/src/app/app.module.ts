@@ -6,13 +6,15 @@ import { AppComponent } from './app.component';
 import { ScheduleComponent } from './schedule/schedule.component';
 import { MapComponent } from './map/map.component';
 import { ItineraryComponent } from './itinerary/itinerary.component';
+import { TeamComponent } from './team/team.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ScheduleComponent,
     MapComponent,
-    ItineraryComponent
+    ItineraryComponent,
+    TeamComponent
   ],
   imports: [
     BrowserModule,
