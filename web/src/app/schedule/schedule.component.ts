@@ -169,6 +169,21 @@ export class ScheduleComponent implements AfterViewInit {
     return date.toLocaleString(undefined, { timeZone, dateStyle: 'medium', timeStyle: 'short' });
   }
 
+  getRound(matchId: number) {
+    if (matchId <= 48) {
+      return 'Group';
+    } else if (matchId <= 56) {
+      return 'Round of 16';
+    } else if (matchId <= 60) {
+      return 'Quarters';
+    } else if (matchId <= 62) {
+      return 'Semis';
+    } else {
+      return 'Finals';
+    }
+
+  }
+
   ngAfterViewInit(): void {
     this.updateMatches();
     $('.selectpicker').selectpicker();

@@ -119,7 +119,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       dots.append('text')
         .attr('x', (d: City) => this.projection(CITIES[d])[0] + OFFSETS[d][0])
         .attr('y', (d: City) => this.projection(CITIES[d])[1] + OFFSETS[d][1])
-        .text((d: City) => d);
+        .text((d: City) => d.slice(0, -4));
 
       this.drawPaths();
     });

@@ -31,18 +31,22 @@
                 <h5>Timezone</h5>
                 <select class="selectpicker" data-width="100%" #timezone (change)="updateMatches()">
                     <option value="local">Local game time</option>
-                    <option value="computer">Computer time</option>
-                    <option value="Pacific/Auckland">New Zealand</option>
-                    <option value="Australia/Sydney">Sydney/Melbourne/Brisbane</option>
-                    <option value="Australia/Adelaide">Adelaide</option>
-                    <option value="Australia/Perth">Perth</option>
+                    <option value="computer">My time</option>
+                    <optgroup label="New Zealand">
+                        <option value="Pacific/Auckland">New Zealand</option>
+                    </optgroup>
+                    <optgroup label="Australia">
+                        <option value="Australia/Sydney">Sydney/Melbourne/Brisbane</option>
+                        <option value="Australia/Adelaide">Adelaide</option>
+                        <option value="Australia/Perth">Perth</option>
+                    </optgroup>
                 </select>
             </div>
             <div class="pb-3 pt-1">
                 <div>
                     <h5 class="d-inline">Projected finish</h5>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                    data-bs-toggle="tooltip" data-bs-placement="top" title="See what a team's schedule looks like if they finish 1st or 2nd in their group."
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="See schedules look like each team finishes 1st or 2nd in their group."
                         fill="currentColor" class="bi bi-question-circle ms-1 mb-1" viewBox="0 0 16 16">
                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                         <path
@@ -65,10 +69,10 @@
                             {{countryService.formatCountry(country)}}</option>
                     </optgroup>
                 </select>
-                <div class="mt-1">Position</div>
+                <div class="mt-1">Finish</div>
                 <select class="selectpicker" data-width="100%" #position>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
+                    <option value="1">First in group</option>
+                    <option value="2">Second in group</option>
                 </select>
                 <div class="d-grid d-md-flex justify-content-md-end">
                     <button type="button" class="btn btn-secondary mt-2" (click)="addProjection()">Add
@@ -98,6 +102,7 @@
                             <th scope="col">Away</th>
                             <th scope="col">City</th>
                             <th scope="col">Date</th>
+                            <th scope="col">Round</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -107,6 +112,7 @@
                             <td style="white-space:pre-wrap"><app-team [value]="match.away" [projections]="getMatchedProjections(match.away)"></app-team></td>
                             <td>{{match.city}}</td>
                             <td>{{formatDate(match.date, match.city)}}</td>
+                            <td scope="row">{{getRound(match.id)}}</td>
                         </tr>
                     </tbody>
                 </table>

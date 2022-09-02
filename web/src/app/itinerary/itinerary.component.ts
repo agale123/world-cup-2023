@@ -14,7 +14,7 @@ const GREEN = '#009645';
 const ONE_DAY = 1000 * 60 * 60 * 24;
 
 // 6:00 AM in Auckland on opening day
-const FIRST_DAY = Date.parse('2023-06-20 6:00 GMT+12');
+const FIRST_DAY = Date.parse('2023-07-20 6:00 GMT+12');
 
 interface CountryPreference {
   country: string;

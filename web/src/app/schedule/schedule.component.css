@@ -1,6 +1,7 @@
 ::ng-deep button[role="combobox"],
-::ng-deep button[role="combobox"]:hover {
-    border: 1px solid rgba(0, 0, 0, .125);
+::ng-deep button[role="combobox"]:hover,
+::ng-deep button[role="combobox"]:focus {
+    border: 1px solid rgba(0, 0, 0, .125) !important;
 }
 
 .table-wrapper {
