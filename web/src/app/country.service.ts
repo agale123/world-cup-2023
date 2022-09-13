@@ -70,6 +70,18 @@ export const CITIES = {
   'Wellington, NZ': [174.7787, -41.2924],
 };
 
+export const CITY_TITLE = {
+  'Adelaide, AU': 'Tarntanya',
+  'Auckland, NZ': 'Tāmaki Makaurau',
+  'Brisbane, AU': 'Meaanjin',
+  'Dunedin, NZ': 'Ōtepoti',
+  'Hamilton, NZ': 'Kirikiriroa',
+  'Melbourne, AU': 'Naarm',
+  'Perth, AU': 'Boorloo',
+  'Sydney, AU': 'Gadigal',
+  'Wellington, NZ': 'Te Whanganui-a-Tara'
+};
+
 @Injectable({
   providedIn: 'root'
 })

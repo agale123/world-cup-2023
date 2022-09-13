@@ -1,0 +1,24 @@
+<div class="table-wrapper">
+    <table class="table table-striped">
+        <thead class="sticky-top bg-white">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Home</th>
+                <th scope="col">Away</th>
+                <th scope="col">City</th>
+                <th scope="col">Date</th>
+                <th scope="col">Round</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let match of matches">
+                <th scope="row">{{match.id}}</th>
+                <td style="white-space:pre-wrap"><app-team [value]="match.home" [projections]="getMatchedProjections(match.home)"></app-team></td>
+                <td style="white-space:pre-wrap"><app-team [value]="match.away" [projections]="getMatchedProjections(match.away)"></app-team></td>
+                <td [title]="titles[match.city]">{{match.city}}</td>
+                <td>{{formatDate(match.date, match.city)}}</td>
+                <td scope="row">{{getRound(match.id)}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

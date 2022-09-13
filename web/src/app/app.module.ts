@@ -7,6 +7,7 @@ import { ScheduleComponent } from './schedule/schedule.component';
 import { MapComponent } from './map/map.component';
 import { ItineraryComponent } from './itinerary/itinerary.component';
 import { TeamComponent } from './team/team.component';
+import { TableComponent } from './table/table.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { TeamComponent } from './team/team.component';
     ScheduleComponent,
     MapComponent,
     ItineraryComponent,
-    TeamComponent
+    TeamComponent,
+    TableComponent
   ],
   imports: [
     BrowserModule,

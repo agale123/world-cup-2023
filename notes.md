@@ -32,7 +32,7 @@ bunch of New Zealand cities
 
 # Other Ideas
 
-- [ ] Incorporate both versions of the city names in tooltips
+- [x] Incorporate both versions of the city names in tooltips
 - [ ] Update link for the schedule page to have projections and filters
 
 # Polish

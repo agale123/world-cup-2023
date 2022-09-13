@@ -145,45 +145,6 @@ export class ScheduleComponent implements AfterViewInit {
     this.changeDetector.detectChanges();
   }
 
-  formatCountry(country: string) {
-    const countries = this.getMatchedProjections(country)
-      .map(c => this.countryService.formatCountry(c))
-      .join('\n');
-    if (['W', '1', '2'].includes(country.slice(0, 1)) && countries !== country) {
-      return `${country}:\n${countries}`;
-    } else {
-      return countries;
-    }
-  }
-
-  formatDate(date: Date, city: string) {
-    const selected = this.timezone?.nativeElement.value;
-    let timeZone;
-    if (selected === 'local') {
-      return this.matchService.formatDate(date, city);
-    } else if (selected === 'computer') {
-      timeZone = undefined;
-    } else {
-      timeZone = selected;
-    }
-    return date.toLocaleString(undefined, { timeZone, dateStyle: 'medium', timeStyle: 'short' });
-  }
-
-  getRound(matchId: number) {
-    if (matchId <= 48) {
-      return 'Group';
-    } else if (matchId <= 56) {
-      return 'Round of 16';
-    } else if (matchId <= 60) {
-      return 'Quarters';
-    } else if (matchId <= 62) {
-      return 'Semis';
-    } else {
-      return 'Finals';
-    }
-
-  }
-
   ngAfterViewInit(): void {
     this.updateMatches();
     $('.selectpicker').selectpicker();

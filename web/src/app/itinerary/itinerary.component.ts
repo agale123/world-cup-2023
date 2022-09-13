@@ -93,14 +93,6 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
     this.cityPreferences.push({ city, weight });
   }
 
-  formatCountry(country: string) {
-    return this.countryService.formatCountry(country);
-  }
-
-  formatDate(date: Date, city: string) {
-    return this.matchService.formatDate(date, city);
-  }
-
   getCities() {
     return Object.entries((this.matches || []).reduce(
       (acc: { [key: string]: number }, o: Match) => {

@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import * as d3 from 'd3';
-import { CITIES, CountryService } from '../country.service';
+import { CITIES, CITY_TITLE, CountryService } from '../country.service';
 import { FactService, Fact } from '../fact.service';
 import { City, MatchService } from '../match.service';
 
@@ -119,8 +119,9 @@ export class MapComponent implements OnInit, AfterViewInit {
       dots.append('text')
         .attr('x', (d: City) => this.projection(CITIES[d])[0] + OFFSETS[d][0])
         .attr('y', (d: City) => this.projection(CITIES[d])[1] + OFFSETS[d][1])
-        .text((d: City) => d.slice(0, -4));
-
+        .text((d: City) => d.slice(0, -4))
+        .append("svg:title")
+        .text((d: City) => CITY_TITLE[d]);
       this.drawPaths();
     });
   }
