@@ -34,9 +34,16 @@ bunch of New Zealand cities
 
 - [x] Incorporate both versions of the city names in tooltips
 - [ ] Update link for the schedule page to have projections and filters
+- [ ] Add query params to the link as you change them
+- [ ] Simplify itinerary planner algorithm to just look at cities/teams of
+  interest and find the best path through. For example, just grab only games
+  that include teams and cities specified and find the optimal path through
+  those. Then if there are any games that can be added (based on gap between
+  games and how out of the way the extra games are) then they are included.
 
 # Polish
 
 - [ ] Add facts for all countries
 - [ ] Add flags for all countries
 - [ ] Add game times
+- [ ] Ensure site previews well on social media
