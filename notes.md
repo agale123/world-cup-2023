@@ -37,7 +37,6 @@ bunch of New Zealand cities
 
 # Polish
 
-- [ ] See if there are any good links to include on the facts list
 - [ ] Add facts for all countries
 - [ ] Add flags for all countries
 - [ ] Add game times

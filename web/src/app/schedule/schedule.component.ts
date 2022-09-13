@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { map, Observable } from 'rxjs';
+import { first, map, Observable } from 'rxjs';
 import { CountryService, FLAGS } from '../country.service';
 import { City, Match, MatchService } from '../match.service';
 
@@ -41,7 +41,7 @@ export class ScheduleComponent implements AfterViewInit {
   constructor(private readonly matchService: MatchService,
     readonly countryService: CountryService,
     private readonly changeDetector: ChangeDetectorRef,
-    activatedRoute: ActivatedRoute,
+    private readonly activatedRoute: ActivatedRoute,
     private readonly location: Location,
     titleService: Title) {
     titleService.setTitle('World Cup Explorer - Schedule');
@@ -60,7 +60,7 @@ export class ScheduleComponent implements AfterViewInit {
         this.formatMatchMap[match.away] = matchesMap[away];
       }
     }
-    activatedRoute.queryParams.pipe(map(params => {
+    activatedRoute.queryParams.pipe(first(), map(params => {
       const ids = params['matchIds'];
       this.matchIds = params['matchIds']
         ? params['matchIds'].split(',').map((i: string) => parseInt(i))
@@ -80,7 +80,10 @@ export class ScheduleComponent implements AfterViewInit {
       return;
     }
     const url = new URL(window.location.href);
-    url.searchParams.set('matchIds', this.matches.map(map => map.id).join(','));
+    // TODO(agale): Add rest of the inputs as query params
+    if (this.timezone?.nativeElement.value) {
+      url.searchParams.set('tz', this.timezone?.nativeElement.value);
+    }
     url.pathname = '/schedule';
     navigator.clipboard.writeText(url.toString());
   }
@@ -151,6 +154,13 @@ export class ScheduleComponent implements AfterViewInit {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     const tooltipList = Array.prototype.slice.call(tooltipTriggerList, 0)
       .map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+    this.activatedRoute.queryParams.pipe(first(), map(params => {
+      if (params['tz']) {
+        $('.selectpicker.tz').selectpicker('val', params['tz']);
+      }
+      this.changeDetector.detectChanges();
+    })).subscribe();
   }
 
 }
