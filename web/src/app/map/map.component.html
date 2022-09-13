@@ -23,7 +23,7 @@
                     </label>
                 </div>
             </div>
-            <h5 class="pt-3">Facts</h5>
+            <h5 class="pt-3" *ngIf="facts.length">Facts</h5>
             <ul class="list-group">
                 <li *ngFor="let fact of facts" class="list-group-item"><b>{{fact.name}}</b>: {{fact.value}}</li>
             </ul>

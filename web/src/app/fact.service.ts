@@ -8,6 +8,12 @@ export interface Fact {
 
 // TODO(agale): Populate facts for each country.
 const FACTS: {[key: string]: Fact[]} = {
+  'Argentina': [
+    { name: 'Past Appearances', value: '3' },
+    { name: 'Best Finish', value: 'Group Stage' },
+    { name: 'FIFA rank', value: '31' },
+    { name: 'Population', value: '45 million' },
+  ],
   'Australia': [
     { name: 'Past Appearances', value: '7' },
     { name: 'Best Finish', value: 'Quarterfinals' },
@@ -26,6 +32,12 @@ const FACTS: {[key: string]: Fact[]} = {
     { name: 'FIFA rank', value: '16' },
     { name: 'Population', value: '1.4 billion' },
   ],
+  'Colombia': [
+    { name: 'Past Appearances', value: '2' },
+    { name: 'Best Finish', value: 'Round of 16' },
+    { name: 'FIFA rank', value: '25' },
+    { name: 'Population', value: '50 million' },
+  ],
   'Costa Rica': [
     { name: 'Past Appearances', value: '1' },
     { name: 'Best Finish', value: 'Group Stage' },
@@ -38,11 +50,29 @@ const FACTS: {[key: string]: Fact[]} = {
     { name: 'FIFA rank', value: '15' },
     { name: 'Population', value: '5.8 million' },
   ],
+  'England': [
+    { name: 'Past Appearances', value: '5' },
+    { name: 'Best Finish', value: 'Third place' },
+    { name: 'FIFA rank', value: '4' },
+    { name: 'Population', value: '55 million' },
+  ],
   'France': [
     { name: 'Past Appearances', value: '4' },
     { name: 'Best Finish', value: 'Fourth Place' },
     { name: 'FIFA rank', value: '3' },
     { name: 'Population', value: '67 million' },
+  ],
+  'Germany': [
+    { name: 'Past Appearances', value: '8' },
+    { name: 'Best Finish', value: 'Champions' },
+    { name: 'FIFA rank', value: '2' },
+    { name: 'Population', value: '83 million' },
+  ],
+  'Italy': [
+    { name: 'Past Appearances', value: '3' },
+    { name: 'Best Finish', value: 'Quarterfinals' },
+    { name: 'FIFA rank', value: '15' },
+    { name: 'Population', value: '59 million' },
   ],
   'Jamaica': [
     { name: 'Past Appearances', value: '1' },
@@ -62,6 +92,12 @@ const FACTS: {[key: string]: Fact[]} = {
     { name: 'FIFA rank', value: '77' },
     { name: 'Population', value: '36 million' },
   ],
+  'Netherlands': [
+    { name: 'Past Appearances', value: '2' },
+    { name: 'Best Finish', value: 'Runners-up' },
+    { name: 'FIFA rank', value: '6' },
+    { name: 'Population', value: '17 million' },
+  ],
   'New Zealand': [
     { name: 'Past Appearances', value: '5' },
     { name: 'Best Finish', value: 'Group Stage' },
@@ -73,6 +109,12 @@ const FACTS: {[key: string]: Fact[]} = {
     { name: 'Best Finish', value: 'Quarter Finals' },
     { name: 'FIFA rank', value: '39' },
     { name: 'Population', value: '206 million' },
+  ],
+  'Norway': [
+    { name: 'Past Appearances', value: '8' },
+    { name: 'Best Finish', value: 'Champions' },
+    { name: 'FIFA rank', value: '13' },
+    { name: 'Population', value: '5.3 million' },
   ],
   'Philippines': [
     { name: 'Past Appearances', value: '0' },
@@ -134,9 +176,6 @@ export class FactService {
     if (formattedCountry in FACTS) {
       return FACTS[formattedCountry];
     }
-    return [
-      { name: 'Population', value: 'x' },
-      { name: 'Wins', value: 'x' },
-    ]
+    return [];
   }
 }
