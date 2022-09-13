@@ -171,6 +171,9 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
   }
 
   private drawCities() {
+    // Clear any previous marks
+    this.g.selectAll('g.city').remove();
+
     const counts: { [key: string]: number } = {};
     for (const match of this.matches || []) {
       counts[match.city] = counts[match.city] ? counts[match.city] + 1 : 1;

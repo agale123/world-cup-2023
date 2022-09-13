@@ -1,41 +1,43 @@
 # User Study #1
 
-[x] Would be helpful to show the country associated with the city
-[x] Distinguish group stage from knockout rounds in the schedule
-[x] Pick New Zealand: 1 and then change to New Zealand: 2 with a
+- [x] Would be helpful to show the country associated with the city
+- [x] Distinguish group stage from knockout rounds in the schedule
+- [x] Pick New Zealand: 1 and then change to New Zealand: 2 with a
 New Zealand filter then it shows some rows that don't have New
 Zealand.
-[x] Add ? tooltip that explains what it shows
-[x] Horizontal border between 4 sections on the schedule page
-[x] Change Save text to be something like "Add projection"
+- [x] Add ? tooltip that explains what it shows
+- [x] Horizontal border between 4 sections on the schedule page
+- [x] Change Save text to be something like "Add projection"
 
-[x] Can you add flag emojis to the country names?
-[x] Insecure d3 script warning
-[x] Generate itinerary is broken
+- [x] Can you add flag emojis to the country names?
+- [x] Insecure d3 script warning
+- [x] Generate itinerary is broken
 
 # User Study #2
 
-[x] Maybe use "My timezone" for computer time
-[x] Add countries to the timezone picker
-[x] Make projection tooltip clarify that you can do more than one team
-[x] Make a column that shows round (group, semi, final, etc)
-[x] For map page, use wording about win group stage and second in group
-[x] For map, don't show country on labels
-[x] Is it further or farther
+- [x] Maybe use "My timezone" for computer time
+- [x] Add countries to the timezone picker
+- [x] Make projection tooltip clarify that you can do more than one team
+- [x] Make a column that shows round (group, semi, final, etc)
+- [x] For map page, use wording about win group stage and second in group
+- [x] For map, don't show country on labels
+- [x] Is it further or farther
 
 # Bugs
-[] Some cities appear to be missing on the map on the itinerary or extra
+
+- [x] Some cities appear to be missing on the map on the itinerary or extra
 ones are showing
-[] If you pick all Australia cities, the itinerary sometimes has a
+- [ ] If you pick all Australia cities, the itinerary sometimes has a
 bunch of New Zealand cities
 
 # Other Ideas
 
-[] Incorporate both versions of the city names in tooltips
-[] Update link for the schedule page to have projections and filters
+- [ ] Incorporate both versions of the city names in tooltips
+- [ ] Update link for the schedule page to have projections and filters
 
 # Polish
-[] See if there are any good links to include on the facts list
-[] Add facts for all countries
-[] Add flags for all countries
-[] Add game times
+
+- [ ] See if there are any good links to include on the facts list
+- [ ] Add facts for all countries
+- [ ] Add flags for all countries
+- [ ] Add game times
