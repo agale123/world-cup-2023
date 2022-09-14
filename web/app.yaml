@@ -11,6 +11,16 @@ handlers:
   static_files: dist/worldcup/favicon.ico
   upload: dist/worldcup/favicon.ico
   secure: always
+
+- url: /preview\.png
+  static_files: dist/worldcup/preview.png
+  upload: dist/worldcup/preview.png
+  secure: always
+
+- url: /preview_twitter\.jpg
+  static_files: dist/worldcup/preview_twitter.jpg
+  upload: dist/worldcup/preview_twitter.jpg
+  secure: always
   
 - url: /assets/map\.geojson
   secure: always

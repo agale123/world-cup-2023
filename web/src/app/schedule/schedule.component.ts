@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { select } from 'd3';
 import { first, map, Observable } from 'rxjs';
 import { CountryService, FLAGS } from '../country.service';
 import { City, Match, MatchService } from '../match.service';
@@ -36,8 +37,6 @@ export class ScheduleComponent implements AfterViewInit {
 
   readonly formatMatchMap: { [key: string]: string[] } = {};
 
-  matchIds: number[] | undefined;
-
   constructor(private readonly matchService: MatchService,
     readonly countryService: CountryService,
     private readonly changeDetector: ChangeDetectorRef,
@@ -60,32 +59,35 @@ export class ScheduleComponent implements AfterViewInit {
         this.formatMatchMap[match.away] = matchesMap[away];
       }
     }
-    activatedRoute.queryParams.pipe(first(), map(params => {
-      const ids = params['matchIds'];
-      this.matchIds = params['matchIds']
-        ? params['matchIds'].split(',').map((i: string) => parseInt(i))
-        : undefined;
-    })).subscribe();
   }
 
-
-  clearMatchIds() {
-    this.matchIds = undefined;
-    this.updateMatches();
-    this.location.replaceState("/schedule")
+  getURL() {
+    const url = new URL(window.location.href);
+    const timezone = this.timezone?.nativeElement.value;
+    if (timezone && timezone !== 'local') {
+      url.searchParams.set('tz', this.timezone?.nativeElement.value);
+    }
+    const countries = [...this.countries?.nativeElement.options]
+      .filter((opt: HTMLOptionElement) => opt.selected)
+      .map((opt: HTMLOptionElement) => opt.value);
+    if (countries.length > 0) {
+      url.searchParams.set('tm', JSON.stringify(countries));
+    }
+    const cities = [...this.cities?.nativeElement.options]
+      .filter((opt: HTMLOptionElement) => opt.selected)
+      .map((opt: HTMLOptionElement) => opt.value);
+    if (cities.length > 0) {
+      url.searchParams.set('cty', JSON.stringify(cities));
+    }
+    if (this.projected.length > 0) {
+      url.searchParams.set('prj', JSON.stringify(this.projected));
+    }
+    url.pathname = '/schedule';
+    return url.toString();
   }
 
   copyLink() {
-    if (!this.matches) {
-      return;
-    }
-    const url = new URL(window.location.href);
-    // TODO(agale): Add rest of the inputs as query params
-    if (this.timezone?.nativeElement.value) {
-      url.searchParams.set('tz', this.timezone?.nativeElement.value);
-    }
-    url.pathname = '/schedule';
-    navigator.clipboard.writeText(url.toString());
+    navigator.clipboard.writeText(this.getURL());
   }
 
   addProjection() {
@@ -138,28 +140,39 @@ export class ScheduleComponent implements AfterViewInit {
         return true;
       }
       return cities.some((city: string) => match.city === city);
-    }).filter(match => {
-      if (!this.matchIds) {
-        return true;
-      }
-      return this.matchIds.includes(match.id);
     });
     // Need to render the updated matches.
     this.changeDetector.detectChanges();
+
+    this.location.replaceState('/schedule' + this.getURL().split('schedule')[1]);
+  }
+
+  selectedCountries?: string[];
+  isCountrySelected(country: string) {
+    return this.selectedCountries?.includes(country);
+  }
+
+  selectedCities?: string[];
+  isCitySelected(city: string) {
+    return this.selectedCities?.includes(city);
   }
 
   ngAfterViewInit(): void {
-    this.updateMatches();
     $('.selectpicker').selectpicker();
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    const tooltipList = Array.prototype.slice.call(tooltipTriggerList, 0)
+    Array.prototype.slice.call(tooltipTriggerList, 0)
       .map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
     this.activatedRoute.queryParams.pipe(first(), map(params => {
       if (params['tz']) {
         $('.selectpicker.tz').selectpicker('val', params['tz']);
       }
+      this.selectedCountries = params['tm'] ? JSON.parse(params['tm']) : [];
+      this.selectedCities = params['cty'] ? JSON.parse(params['cty']) : [];
+      this.projected = params['prj'] ? JSON.parse(params['prj']) : [];
       this.changeDetector.detectChanges();
+      $('.selectpicker').selectpicker();
+      this.updateMatches();
     })).subscribe();
   }
 

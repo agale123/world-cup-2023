@@ -47,6 +47,8 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
+              "src/preview.png",
+              "src/preview_twitter.jpg",
               "src/assets"
             ],
             "styles": [

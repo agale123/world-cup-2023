@@ -1,30 +1,20 @@
 <div class="container-lg">
     <div class="row">
         <div class="col col-3">
-            <div class="pb-2" *ngIf="matchIds">
-                <h5>Match IDs</h5>
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        {{matchIds.join(', ')}}
-                        <button type="button" class="btn-close float-end" aria-label="Close"
-                            (click)="clearMatchIds()"></button>
-                    </li>
-                </ul>
-            </div>
             <div class="pb-2 pt-1 border-bottom">
                 <h5>Filter</h5>
                 <div>Teams</div>
-                <select class="selectpicker" multiple data-live-search="true" data-actions-box="true" data-width="100%"
-                    #countries (change)="updateMatches()">
+                <select class="selectpicker tm" multiple data-live-search="true" data-actions-box="true" data-width="100%"
+                    #countries (change)="updateMatches()" *ngIf="!!selectedCountries">
                     <optgroup *ngFor="let group of groups" label="{{group.name}}">
-                        <option *ngFor="let country of group.children" value="{{country}}">
+                        <option *ngFor="let country of group.children" value="{{country}}" [selected]="isCountrySelected(country)">
                             {{countryService.formatCountry(country)}}</option>
                     </optgroup>
                 </select>
                 <div>Cities</div>
                 <select class="selectpicker" multiple data-live-search="true" data-actions-box="true" data-width="100%"
-                    #cities (change)="updateMatches()">
-                    <option *ngFor="let city of allCities">{{city}}</option>
+                    #cities (change)="updateMatches()" *ngIf="!!selectedCities">
+                    <option *ngFor="let city of allCities" [selected]="isCitySelected(city)">{{city}}</option>
                 </select>
             </div>
             <div class="pb-2 pt-1 border-bottom">
