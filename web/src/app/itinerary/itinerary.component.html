@@ -58,34 +58,13 @@
             </div>
             <!-- City prefs -->
             <div class="py-2">
-                <div class="d-inline">
-                    <span>
-                        <div class="d-inline-block me-1 label"><b>City</b>: </div>
-                        <select class="selectpicker me-3" data-live-search="true" #city>
-                            <option *ngFor="let city of cities" value="{{city}}">{{city}}</option>
-                        </select>
-                    </span>
-                    <span>
-                        <div class="d-inline me-1"><b>Weight</b>: 1</div>
-                        <input type="range" class="form-range me-2" min="1" max="5" step="1"
-                            style="width: 100px; height: 8px;" #weight2>
-                        <div class="d-inline me-3">5</div>
-                    </span>
-                    <span>
-                        <div class="d-inline">
-                            <button type="button" class="btn btn-secondary" (click)="addCityPreference()">Add
-                                City</button>
+                <div class="d-flex" style="width: 100%">
+                        <div class="d-inline-block me-1 mt-1 label" ><b>Cities</b>: </div>
+                        <div class="d-inline-block flex-grow-1" style="max-width: 350px">
+                            <select class="selectpicker" multiple data-live-search="true" #city (change)="updateCityPreferences()" data-width="100%">
+                                <option *ngFor="let city of cities">{{city}}</option>
+                            </select>
                         </div>
-                    </span>
-                </div>
-                <div class="">
-                    <ul *ngFor="let preference of cityPreferences" class="list-group d-inline-block mx-1 mt-2">
-                        <li class="list-group-item" style="width: 250px">
-                            {{preference.city}}: {{preference.weight}}
-                            <button type="button" class="btn-close ms-2 float-end" aria-label="Close"
-                                (click)="removeCityPreference(preference)"></button>
-                        </li>
-                    </ul>
                 </div>
             </div>
         </div>

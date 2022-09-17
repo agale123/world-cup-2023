@@ -1,6 +1,16 @@
 <div class="container-lg">
     <div class="row">
         <div class="col col-3">
+            <div class="pb-2" *ngIf="matchIds">
+                <h5>Match IDs</h5>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        {{matchIds.join(', ')}}
+                        <button type="button" class="btn-close float-end" aria-label="Close"
+                            (click)="clearMatchIds()"></button>
+                    </li>
+                </ul>
+            </div>
             <div class="pb-2 pt-1 border-bottom">
                 <h5>Filter</h5>
                 <div>Teams</div>

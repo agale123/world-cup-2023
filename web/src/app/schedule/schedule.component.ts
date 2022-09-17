@@ -32,6 +32,8 @@ export class ScheduleComponent implements AfterViewInit {
 
   projected: Projection[] = [];
 
+  matchIds: number[] | undefined;
+
   readonly allCities = this.matchService.getAllCities();
   readonly groups = this.matchService.getGroups();
 
@@ -59,6 +61,19 @@ export class ScheduleComponent implements AfterViewInit {
         this.formatMatchMap[match.away] = matchesMap[away];
       }
     }
+
+    activatedRoute.queryParams.pipe(first(), map(params => {
+      const ids = params['matchIds'];
+      this.matchIds = params['matchIds']
+        ? params['matchIds'].split(',').map((i: string) => parseInt(i))
+        : undefined;
+    })).subscribe();
+  }
+
+  clearMatchIds() {
+    this.matchIds = undefined;
+    this.updateMatches();
+    this.location.replaceState("/schedule")
   }
 
   getURL() {
@@ -140,6 +155,11 @@ export class ScheduleComponent implements AfterViewInit {
         return true;
       }
       return cities.some((city: string) => match.city === city);
+    }).filter(match => {
+      if (!this.matchIds) {
+        return true;
+      }
+      return this.matchIds.includes(match.id);
     });
     // Need to render the updated matches.
     this.changeDetector.detectChanges();

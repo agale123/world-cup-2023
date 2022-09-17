@@ -48,7 +48,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
 
   countryPreferences: CountryPreference[] = [];
 
-  cityPreferences: CityPreference[] = [];
+  cityPreferences: string[] = [];
 
   constructor(readonly countryService: CountryService,
     private readonly matchService: MatchService,
@@ -83,16 +83,10 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
     this.countryPreferences.push({ country, weight });
   }
 
-  removeCityPreference(preference: CityPreference) {
-    this.cityPreferences = this.cityPreferences
-      .filter(p => p.city !== preference.city);
-  }
-
-  addCityPreference() {
-    const city = this.city?.nativeElement.value;
-    const weight = parseInt(this.weight2?.nativeElement.value);
-    this.removeCityPreference({ city, weight });
-    this.cityPreferences.push({ city, weight });
+  updateCityPreferences() {
+    this.cityPreferences = [...this.city?.nativeElement.options]
+      .filter((opt: HTMLOptionElement) => opt.selected)
+      .map((opt: HTMLOptionElement) => opt.value);
   }
 
   getCities() {
@@ -203,10 +197,6 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
       map[obj.country] = obj.weight;
       return map
     }, {});
-    this.cityPreferenceMap = this.cityPreferences.reduce((map: { [key: string]: number }, obj) => {
-      map[obj.city] = obj.weight;
-      return map
-    }, {});
 
     // Generate itinerary
     let prev = Object.keys(CITIES).map(city => ({ city, score: 0, path: [city] }));
@@ -270,7 +260,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
       const teamReward = TEAM_REWARD_MULTIPLIER * Math.pow(Math.max(
         (this.preferenceMap[matches[0].home] || 0) + (this.preferenceMap[matches[0].away] || 0),
         DEFAULT_WEIGHT), TEAM_POWER);
-      const cityReward = CITY_REWARD_MULTIPLIER * Math.pow(this.cityPreferenceMap[matches[0].city] || 0, CITY_POWER);
+      const cityReward = CITY_REWARD_MULTIPLIER * Math.pow(matches[0].city in this.cityPreferences ? CITY_WEIGHT : 0, CITY_POWER);
       return (teamReward + cityReward) / (this.cityPreferences.length + this.countryPreferences.length);
     }
     return 0;
@@ -278,6 +268,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
 }
 
 const DEFAULT_WEIGHT = 0.75;
+const CITY_WEIGHT = 3;
 const TEAM_POWER = 1.5;
 const CITY_POWER = 0.8;
 const DISTANCE_POWER = 0.8;
