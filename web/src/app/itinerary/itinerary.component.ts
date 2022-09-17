@@ -15,6 +15,8 @@ const ONE_DAY = 1000 * 60 * 60 * 24;
 
 // 6:00 AM in Auckland on opening day
 const FIRST_DAY = Date.parse('2023-07-20 6:00 GMT+12');
+const GROUP_START = Date.parse('2023-07-20');
+const GROUP_END = Date.parse('2023-08-03');
 
 interface CountryPreference {
   country: string;
@@ -76,7 +78,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
 
   addPreference() {
     const country = this.country?.nativeElement.value;
-    const weight = this.weight?.nativeElement.value;
+    const weight = parseInt(this.weight?.nativeElement.value);
     this.removePreference({ country, weight });
     this.countryPreferences.push({ country, weight });
   }
@@ -88,7 +90,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
 
   addCityPreference() {
     const city = this.city?.nativeElement.value;
-    const weight = this.weight2?.nativeElement.value;
+    const weight = parseInt(this.weight2?.nativeElement.value);
     this.removeCityPreference({ city, weight });
     this.cityPreferences.push({ city, weight });
   }
@@ -196,6 +198,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
   private cityPreferenceMap: { [key: string]: number } = {};
 
   generateItinerary() {
+    // Read inputs from the form
     this.preferenceMap = this.countryPreferences.reduce((map: { [key: string]: number }, obj) => {
       map[obj.country] = obj.weight;
       return map
@@ -206,23 +209,47 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
     }, {});
 
     // Generate itinerary
+    let prev = Object.keys(CITIES).map(city => ({ city, score: 0, path: [city] }));
+    let next: Array<{ city: string, score: number, path: string[] }> = [];
+    const date = new Date(GROUP_START);
+    while (date <= new Date(GROUP_END)) {
+      const dateKey = date.toLocaleString(undefined, { dateStyle: 'medium', timeZone: 'GMT+0' });
+      // console.log('******' + dateKey);
 
-    // There are 15 days of group stage games and each can be a city or null.
-    const dims = Array(15).fill(optimjs.Categorical([...this.cities, null]));
+      for (const city of Object.keys(CITIES)) {
+        let value = Number.NEGATIVE_INFINITY;
+        let path: string[] = [];
+        for (const node of prev) {
+          // console.log(node.city + '->' + city + ' ' + this.cost(node.city, city));
+          const newValue = node.score + this.cost(node.city, city);
+          if (newValue > value) {
+            value = newValue;
+            path = [...node.path];
+          }
+        }
+        if (this.reward(dateKey, city) > 0) {
+          // console.log(city + ' ' + this.reward(dateKey, city));
+        }
 
-    // Powell method can be applied to zero order unconstrained optimization
-    // TODO(agale): Optimize these parameters.
-    let solution = optimjs.rs_minimize(
-      this.score.bind(this),
-      dims,
-      128,// n_calls (64 default)
-      20,// n_random_starts (13 default) 
-      0.3// mutation_rate (0.1 default) 
-    );
+        value += this.reward(dateKey, city);
+        path.push(city);
+        next.push({ city, path, score: value });
+      }
+
+      prev = next;
+      next = [];
+      date.setDate(date.getDate() + 1);
+    }
+    const optimal = prev.reduce((prev, curr) => {
+      return prev.score < curr.score ? curr : prev;
+    });
+
+    // Remove the entry for day -1
+    optimal.path.shift();
 
     this.matches = this.matchService.getMatches().filter(m => {
-      const index = Math.round((m.date.getTime() - FIRST_DAY) / ONE_DAY);
-      return solution.best_x[index] === m.city;
+      const index = Math.round((m.date.getTime() - GROUP_START) / ONE_DAY);
+      return optimal.path[index] === m.city;
     });
 
     // Draw the map after the itinerary is generated
@@ -233,76 +260,30 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
     }
   }
 
-  score(v: Array<City | null>) {
-    // This will become a multiplier for the travel cost.
-    const travelPref = 6 - this.travel?.nativeElement.value;
+  cost(from: string, to: string) {
+    return DISTANCE_MULTIPLIER * Math.pow(calcDistance(from as City, to as City), DISTANCE_POWER);
+  }
 
-    let result = 0.0;
-    // City for the previous day
-    let prev = null;
-    // The most recent non-null city (if it exists)
-    let prevNonNull = null;
-    for (let i = 0; i < v.length; i++) {
-      // Calculate cost
-      let distanceMultiplier = 1.0;
-      const distance = prevNonNull && v[i] !== null
-        ? calcDistance(prevNonNull as City, v[i] as City) : 0;
-      if (v[i] !== null) {
-        prevNonNull = v[i];
-      }
-      if (i > 0) {
-        const prev = v[i - 1];
-        if (prev !== null && v[i] !== null && distance > DISTANCE_CUTOFF) {
-          distanceMultiplier = DISTANCE_MULTIPLIER;
-        }
-      }
-      result += Math.pow(distance * distanceMultiplier, 0.5) * travelPref;
-
-      // Calculate reward
-      const countries: { [key: string]: number } = {};
-      const cities: { [key: string]: number } = {};
-      if (v[i] !== null) {
-        const match = this.matchMap[`${i},${v[i]}`];
-        if (match) {
-          // Count how many matches there are for each team. There will be
-          // diminishing returns for higher numbers of matches.
-          countries[match.home] = (countries[match.home] || 0) + 1;
-          countries[match.away] = (countries[match.away] || 0) + 1;
-          cities[match.city] = (cities[match.city] || 0) + 1;
-        }
-      }
-
-      for (const country of Object.keys(countries)) {
-        // Add weights from home & away teams, and default to 0.5 if there
-        // is no team preference.
-        const weight = Math.max(
-          (this.preferenceMap[country] || 0),
-          DEFAULT_WEIGHT);
-        result -= weight * REWARD_MULTIPLIER
-          * Math.pow(countries[country], CITY_POWER)
-          / (this.cityPreferences.length + this.countryPreferences.length);;
-      }
-
-      for (const city of Object.keys(cities)) {
-        // Add weights from cities, and default to 0 if there is no preference.
-        const weight = Math.max(
-          (this.cityPreferenceMap[city] || 0),
-          0);
-        result -= weight * CITY_REWARD_MULTIPLIER
-          * Math.pow(cities[city], CITY_POWER)
-          / (this.cityPreferences.length + this.countryPreferences.length);
-      }
+  reward(date: string, city: string) {
+    const matches = this.matchService.getGamesPerDay()[date].filter(m => m.city === city);
+    if (matches.length > 0) {
+      const teamReward = TEAM_REWARD_MULTIPLIER * Math.pow(Math.max(
+        (this.preferenceMap[matches[0].home] || 0) + (this.preferenceMap[matches[0].away] || 0),
+        DEFAULT_WEIGHT), TEAM_POWER);
+      const cityReward = CITY_REWARD_MULTIPLIER * Math.pow(this.cityPreferenceMap[matches[0].city] || 0, CITY_POWER);
+      return (teamReward + cityReward) / (this.cityPreferences.length + this.countryPreferences.length);
     }
-    return result;
+    return 0;
   }
 }
 
-const DEFAULT_WEIGHT = 0.25;
-const CITY_POWER = 0.9;
-const REWARD_MULTIPLIER = 500;
-const CITY_REWARD_MULTIPLIER = 400;
-const DISTANCE_MULTIPLIER = 4.0;
-const DISTANCE_CUTOFF = 1000;
+const DEFAULT_WEIGHT = 0.75;
+const TEAM_POWER = 1.5;
+const CITY_POWER = 0.8;
+const DISTANCE_POWER = 0.8;
+const TEAM_REWARD_MULTIPLIER = 1;
+const CITY_REWARD_MULTIPLIER = 1;
+const DISTANCE_MULTIPLIER = -0.01;
 
 function calcDistance(a: City, b: City): number {
   var lat1 = CITIES[a][1];

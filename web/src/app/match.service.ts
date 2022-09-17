@@ -10,7 +10,7 @@ export interface Match {
   date: Date;
 }
 
-const TIMEZONE_MAP: {[key: string]: string} = {
+const TIMEZONE_MAP: { [key: string]: string } = {
   'Adelaide, AU': 'Australia/Adelaide',
   'Auckland, NZ': 'Pacific/Auckland',
   'Brisbane, AU': 'Australia/Brisbane',
@@ -28,12 +28,22 @@ const TIMEZONE_MAP: {[key: string]: string} = {
 export class MatchService {
 
   private readonly matchMap: { [key: string]: Match };
+  private readonly gamesPerDay: { [key: string]: Match[] };
 
   constructor() {
     this.matchMap = this.getMatches().reduce((map: { [key: string]: Match }, obj: Match) => {
       map[obj.home] = obj;
       map[obj.away] = obj;
       return map;
+    }, {});
+    this.gamesPerDay = this.getMatches().reduce((prev: { [key: string]: Match[] }, cur) => {
+      const date = this.formatDate(cur.date, cur.city, false);
+      if (date in prev) {
+        prev[date].push(cur);
+      } else {
+        prev[date] = [cur];
+      }
+      return prev;
     }, {});
   }
 
@@ -135,7 +145,15 @@ export class MatchService {
     ];
   }
 
-  formatDate(date: Date, city: string) {
-    return  date.toLocaleString(undefined, { timeZone: TIMEZONE_MAP[city], dateStyle: 'medium', timeStyle: 'short' });
+  getGamesPerDay() {
+    return this.gamesPerDay;
+  }
+
+  formatDate(date: Date, city: string, include_time = true) {
+    return date.toLocaleString(undefined, {
+      timeZone: TIMEZONE_MAP[city],
+      dateStyle: 'medium',
+      timeStyle: include_time ? 'short' : undefined
+    });
   }
 }

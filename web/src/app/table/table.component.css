@@ -2,3 +2,7 @@
     max-height: 75vh;
     overflow-y: auto;
 }
+
+thead.sticky-top {
+    z-index: 980 !important;
+}
