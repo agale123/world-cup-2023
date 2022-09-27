@@ -200,25 +200,25 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
 
     // Generate itinerary
     let prev = Object.keys(CITIES).map(city => ({ city, score: 0, path: [city] }));
+    let prevWithHop = Object.keys(CITIES).map(city => ({ city, score: 0, path: [city] }));
     let next: Array<{ city: string, score: number, path: string[] }> = [];
+    let nextWithHop: Array<{ city: string, score: number, path: string[] }> = []; 
     const date = new Date(GROUP_START);
     while (date <= new Date(GROUP_END)) {
       const dateKey = date.toLocaleString(undefined, { dateStyle: 'medium', timeZone: 'GMT+0' });
-      // console.log('******' + dateKey);
+      const prevDate = new Date(date);
+      prevDate.setDate(date.getDate() - 1);
+      const prevDateKey = prevDate.toLocaleString(undefined, { dateStyle: 'medium', timeZone: 'GMT+0' });
 
       for (const city of Object.keys(CITIES)) {
         let value = Number.NEGATIVE_INFINITY;
         let path: string[] = [];
         for (const node of prev) {
-          // console.log(node.city + '->' + city + ' ' + this.cost(node.city, city));
-          const newValue = node.score + this.cost(node.city, city);
+          const newValue = node.score + this.cost(prevDateKey, node.city, city);
           if (newValue > value) {
             value = newValue;
             path = [...node.path];
           }
-        }
-        if (this.reward(dateKey, city) > 0) {
-          // console.log(city + ' ' + this.reward(dateKey, city));
         }
 
         value += this.reward(dateKey, city);
@@ -250,8 +250,11 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
     }
   }
 
-  cost(from: string, to: string) {
-    return DISTANCE_MULTIPLIER * Math.pow(calcDistance(from as City, to as City), DISTANCE_POWER);
+  cost(prevDate: string, from: string, to: string) {
+    // When there is a game in the previous city on the previous day, increase the cost.
+    const matches = (this.matchService.getGamesPerDay()[prevDate] || []).filter(m => m.city === from);
+    const scale = matches.length > 0 ? SEQUENTIAL_MULTIPLIER : 1;
+    return scale * DISTANCE_MULTIPLIER * Math.pow(calcDistance(from as City, to as City), DISTANCE_POWER);
   }
 
   reward(date: string, city: string) {
@@ -275,6 +278,7 @@ const DISTANCE_POWER = 0.8;
 const TEAM_REWARD_MULTIPLIER = 1;
 const CITY_REWARD_MULTIPLIER = 1;
 const DISTANCE_MULTIPLIER = -0.01;
+const SEQUENTIAL_MULTIPLIER = 1.5;
 
 function calcDistance(a: City, b: City): number {
   var lat1 = CITIES[a][1];
