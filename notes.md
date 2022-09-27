@@ -29,6 +29,7 @@ Zealand.
 ones are showing
 - [x] If you pick all Australia cities, the itinerary sometimes has a
 bunch of New Zealand cities
+- [ ] If you select a city and a team, it weights the team more heavily
 
 # Other Ideas
 

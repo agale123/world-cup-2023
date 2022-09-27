@@ -135,6 +135,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
   private drawMap() {
     return d3.json('../assets/map.geojson').then((outlines: any) => {
       const height = 200;
+      const padding = 20;
       const width = document.getElementsByClassName("map")[0].clientWidth;
 
       let svg = d3.select('.map').append('svg')
@@ -143,8 +144,9 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
       this.g = svg.append('g');
 
       // Render country outlines
-      this.projection = d3.geoMercator().fitSize([width, height], outlines);
-      let path = d3.geoPath().projection(this.projection);
+      this.projection = d3.geoMercator().fitExtent([[padding / 2, padding / 2], [width - padding / 2, height - padding / 2]], outlines);
+      let path = d3.geoPath().projection(this.projection)
+        ;
       this.g.selectAll('path')
         .data(outlines.features)
         .enter()
@@ -202,15 +204,20 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
     let prev = Object.keys(CITIES).map(city => ({ city, score: 0, path: [city] }));
     let prevWithHop = Object.keys(CITIES).map(city => ({ city, score: 0, path: [city] }));
     let next: Array<{ city: string, score: number, path: string[] }> = [];
-    let nextWithHop: Array<{ city: string, score: number, path: string[] }> = []; 
+    let nextWithHop: Array<{ city: string, score: number, path: string[] }> = [];
     const date = new Date(GROUP_START);
+    // Greedy algorithm that builds up a schedule by iterating over dates.
     while (date <= new Date(GROUP_END)) {
+      // Get string representation of the date.
       const dateKey = date.toLocaleString(undefined, { dateStyle: 'medium', timeZone: 'GMT+0' });
       const prevDate = new Date(date);
       prevDate.setDate(date.getDate() - 1);
       const prevDateKey = prevDate.toLocaleString(undefined, { dateStyle: 'medium', timeZone: 'GMT+0' });
 
+      // Consider each possible city you could go to on the date.
       for (const city of Object.keys(CITIES)) {
+        // Figure out which previous city gives the lowest cost.
+        // Consider regular paths with no free hops across the ocean.
         let value = Number.NEGATIVE_INFINITY;
         let path: string[] = [];
         for (const node of prev) {
@@ -221,16 +228,40 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
           }
         }
 
+        // Consider regular paths after a free hop.
+        let valueWithHop = Number.NEGATIVE_INFINITY;
+        let pathWithHop: string[] = [];
+        for (const node of prevWithHop) {
+          const newValue = node.score + this.cost(prevDateKey, node.city, city);
+          if (newValue > valueWithHop) {
+            valueWithHop = newValue;
+            pathWithHop = [...node.path];
+          }
+        }
+        // And paths that get one free hop.
+        for (const node of prev) {
+          if (node.score > valueWithHop) {
+            valueWithHop = node.score;
+            pathWithHop = [...node.path];
+          }
+        }
+        // Add the reward.
         value += this.reward(dateKey, city);
         path.push(city);
         next.push({ city, path, score: value });
+        valueWithHop += this.reward(dateKey, city);
+        pathWithHop.push(city);
+        nextWithHop.push({ city, path: pathWithHop, score: valueWithHop });
       }
 
       prev = next;
+      prevWithHop = nextWithHop;
       next = [];
+      nextWithHop = [];
       date.setDate(date.getDate() + 1);
     }
-    const optimal = prev.reduce((prev, curr) => {
+    // Select the end city that has the highest associated score.
+    const optimal = prevWithHop.reduce((prev, curr) => {
       return prev.score < curr.score ? curr : prev;
     });
 
@@ -260,24 +291,20 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
   reward(date: string, city: string) {
     const matches = this.matchService.getGamesPerDay()[date].filter(m => m.city === city);
     if (matches.length > 0) {
-      const teamReward = TEAM_REWARD_MULTIPLIER * Math.pow(Math.max(
+      const teamReward = Math.max(
         (this.preferenceMap[matches[0].home] || 0) + (this.preferenceMap[matches[0].away] || 0),
-        DEFAULT_WEIGHT), TEAM_POWER);
-      const cityReward = CITY_REWARD_MULTIPLIER * Math.pow(matches[0].city in this.cityPreferences ? CITY_WEIGHT : 0, CITY_POWER);
-      return (teamReward + cityReward) / (this.cityPreferences.length + this.countryPreferences.length);
+        DEFAULT_WEIGHT);
+      const cityReward = matches[0].city in this.cityPreferences ? CITY_WEIGHT : 0;
+      return (teamReward / Math.max(this.countryPreferences.length, 1)) + (cityReward / Math.max(this.cityPreferences.length, 1));
     }
     return 0;
   }
 }
 
-const DEFAULT_WEIGHT = 0.75;
-const CITY_WEIGHT = 3;
-const TEAM_POWER = 1.5;
-const CITY_POWER = 0.8;
-const DISTANCE_POWER = 0.8;
-const TEAM_REWARD_MULTIPLIER = 1;
-const CITY_REWARD_MULTIPLIER = 1;
-const DISTANCE_MULTIPLIER = -0.01;
+const DEFAULT_WEIGHT = 0.25;
+const CITY_WEIGHT = 4;
+const DISTANCE_POWER = 0.6;
+const DISTANCE_MULTIPLIER = -0.05;
 const SEQUENTIAL_MULTIPLIER = 1.5;
 
 function calcDistance(a: City, b: City): number {
