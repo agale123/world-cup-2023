@@ -27,7 +27,7 @@
                     <option *ngFor="let city of allCities" [selected]="isCitySelected(city)">{{city}}</option>
                 </select>
             </div>
-            <div class="pb-2 pt-1 border-bottom">
+            <div class="pb-2 pt-1 border-bottom" *ngIf="renderTimezonePicker">
                 <h5>Timezone</h5>
                 <select class="selectpicker tz" data-width="100%" #timezone (change)="updateMatches()">
                     <option value="local">Local game time</option>
@@ -93,6 +93,6 @@
                     Copy Link
                 </button>
             </div>
-            <app-table [matches]="matches" [projected]="projected" [timezone]="timezone.value"></app-table>
+            <app-table [matches]="matches" [projected]="projected" [timezone]="timezone?.nativeElement.value"></app-table>
         </div>
     </div>

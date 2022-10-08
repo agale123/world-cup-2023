@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 declare var $: any;
-declare var optimjs: any;
 
 const BLUE = '#0099FF';
 const GREEN = '#009645';
@@ -20,11 +19,6 @@ const GROUP_END = Date.parse('2023-08-03');
 
 interface CountryPreference {
   country: string;
-  weight: number;
-}
-
-interface CityPreference {
-  city: string;
   weight: number;
 }
 
@@ -183,15 +177,7 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
       .text((d: City) => d);
   }
 
-  private readonly matchMap =
-    this.matchService.getMatches().reduce((map: { [key: string]: Match }, obj) => {
-      const index = Math.round((obj.date.getTime() - FIRST_DAY) / ONE_DAY);
-      map[`${index},${obj.city}`] = obj;
-      return map;
-    }, {});
-
   private preferenceMap: { [key: string]: number } = {};
-  private cityPreferenceMap: { [key: string]: number } = {};
 
   generateItinerary() {
     // Read inputs from the form
@@ -294,18 +280,18 @@ export class ItineraryComponent implements OnInit, AfterViewInit {
       const teamReward = Math.max(
         (this.preferenceMap[matches[0].home] || 0) + (this.preferenceMap[matches[0].away] || 0),
         DEFAULT_WEIGHT);
-      const cityReward = matches[0].city in this.cityPreferences ? CITY_WEIGHT : 0;
+      const cityReward = this.cityPreferences.includes(matches[0].city) ? CITY_WEIGHT : 0;
       return (teamReward / Math.max(this.countryPreferences.length, 1)) + (cityReward / Math.max(this.cityPreferences.length, 1));
     }
     return 0;
   }
 }
 
-const DEFAULT_WEIGHT = 0.25;
-const CITY_WEIGHT = 4;
+const DEFAULT_WEIGHT = 0.2;
+const CITY_WEIGHT = 1.3;
 const DISTANCE_POWER = 0.6;
-const DISTANCE_MULTIPLIER = -0.05;
-const SEQUENTIAL_MULTIPLIER = 1.5;
+const DISTANCE_MULTIPLIER = -0.015;
+const SEQUENTIAL_MULTIPLIER = 1.6;
 
 function calcDistance(a: City, b: City): number {
   var lat1 = CITIES[a][1];

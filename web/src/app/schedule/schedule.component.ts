@@ -6,6 +6,7 @@ import { select } from 'd3';
 import { first, map, Observable } from 'rxjs';
 import { CountryService, FLAGS } from '../country.service';
 import { City, Match, MatchService } from '../match.service';
+import { RENDER_TIMES } from '../table/table.component';
 
 declare var $: any;
 declare var bootstrap: any;
@@ -38,6 +39,8 @@ export class ScheduleComponent implements AfterViewInit {
   readonly groups = this.matchService.getGroups();
 
   readonly formatMatchMap: { [key: string]: string[] } = {};
+
+  readonly renderTimezonePicker = RENDER_TIMES;
 
   constructor(private readonly matchService: MatchService,
     readonly countryService: CountryService,

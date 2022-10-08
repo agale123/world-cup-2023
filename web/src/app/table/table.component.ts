@@ -7,6 +7,9 @@ interface Projection {
   position: number;
 }
 
+// TODO(agale): Flip this value if game times are available.
+export const RENDER_TIMES = true;
+
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
@@ -63,6 +66,10 @@ export class TableComponent implements OnInit {
   }
 
   formatDate(date: Date, city: string) {
+    if (!RENDER_TIMES) {
+      return this.matchService.formatDate(date, city, false);
+    }
+
     let timeZone;
     if (this.timezone === 'local') {
       return this.matchService.formatDate(date, city);
@@ -71,7 +78,7 @@ export class TableComponent implements OnInit {
     } else {
       timeZone = this.timezone;
     }
-    return date.toLocaleString(undefined, { timeZone, dateStyle: 'medium', timeStyle: 'short' });
+    return date.toLocaleString(undefined, { timeZone, dateStyle: 'medium', timeStyle: 'short'});
   }
 
   getRound(matchId: number) {
