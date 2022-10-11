@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { CITY_TITLE } from '../country.service';
 import { Match, MatchService } from '../match.service';
 
@@ -8,7 +8,7 @@ interface Projection {
 }
 
 // TODO(agale): Flip this value if game times are available.
-export const RENDER_TIMES = true;
+export const RENDER_TIMES = false;
 
 @Component({
   selector: 'app-table',
@@ -26,11 +26,18 @@ export class TableComponent implements OnInit {
   @Input()
   timezone: string = 'local';
 
+  @Input()
+  showCheckboxes = true;
+
+  @ViewChildren("checkbox") checkboxes?: QueryList<ElementRef<HTMLInputElement>>;
+
+  @Output() selected: EventEmitter<number[]> = new EventEmitter();
+
   titles = CITY_TITLE;
 
   readonly formatMatchMap: { [key: string]: string[] } = {};
 
-  constructor(private readonly matchService: MatchService) { 
+  constructor(private readonly matchService: MatchService) {
     const sortedMatches = this.matchService.getMatches().sort((a, b) => a.id - b.id);
     const matchesMap: { [key: number]: string[] } = {};
     for (const match of sortedMatches) {
@@ -49,6 +56,20 @@ export class TableComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  handleCheckbox(event: Event) {
+    (this.checkboxes || []).forEach(checkbox => {
+      checkbox.nativeElement.checked = (<HTMLInputElement>event.target).checked;
+    });
+    this.emitSelected();
+  }
+
+  emitSelected() {
+    const selected = (this.checkboxes || [])
+      .filter(checkbox => checkbox.nativeElement.checked)
+      .map(checkbox => parseInt(checkbox.nativeElement.value));
+    this.selected.emit(selected);
   }
 
   getMatchedProjections(country: string) {
@@ -78,7 +99,7 @@ export class TableComponent implements OnInit {
     } else {
       timeZone = this.timezone;
     }
-    return date.toLocaleString(undefined, { timeZone, dateStyle: 'medium', timeStyle: 'short'});
+    return date.toLocaleString(undefined, { timeZone, dateStyle: 'medium', timeStyle: 'short' });
   }
 
   getRound(matchId: number) {

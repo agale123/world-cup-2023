@@ -14,10 +14,11 @@
             <div class="pb-2 pt-1 border-bottom">
                 <h5>Filter</h5>
                 <div>Teams</div>
-                <select class="selectpicker tm" multiple data-live-search="true" data-actions-box="true" data-width="100%"
-                    #countries (change)="updateMatches()" *ngIf="!!selectedCountries">
+                <select class="selectpicker tm" multiple data-live-search="true" data-actions-box="true"
+                    data-width="100%" #countries (change)="updateMatches()" *ngIf="!!selectedCountries">
                     <optgroup *ngFor="let group of groups" label="{{group.name}}">
-                        <option *ngFor="let country of group.children" value="{{country}}" [selected]="isCountrySelected(country)">
+                        <option *ngFor="let country of group.children" value="{{country}}"
+                            [selected]="isCountrySelected(country)">
                             {{countryService.formatCountry(country)}}</option>
                     </optgroup>
                 </select>
@@ -45,8 +46,9 @@
             <div class="pb-3 pt-1">
                 <div>
                     <h5 class="d-inline">Projected finish</h5>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                    data-bs-toggle="tooltip" data-bs-placement="top" title="See what the schedule looks like if certain teams finish 1st or 2nd in their group."
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="See what the schedule looks like if certain teams finish 1st or 2nd in their group."
                         fill="currentColor" class="bi bi-question-circle ms-1 mb-1" viewBox="0 0 16 16">
                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                         <path
@@ -81,7 +83,15 @@
             </div>
         </div>
         <div class="col">
-            <div class="mb-2 d-flex justify-content-end">
+            <div class="mb-2 d-flex justify-content-between">
+                <button (click)="filterToSelected()" type="button" class="btn btn-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-filter" viewBox="0 0 16 16" style="margin-bottom: 4px;">
+                        <path
+                            d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                    </svg>
+                    Filter to selected
+                </button>
                 <button (click)="copyLink()" type="button" class="btn btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-link" viewBox="0 0 16 16" style="margin-bottom: 4px;">
@@ -93,6 +103,8 @@
                     Copy Link
                 </button>
             </div>
-            <app-table [matches]="matches" [projected]="projected" [timezone]="timezone?.nativeElement.value"></app-table>
+            <app-table [matches]="matches" [projected]="projected" [timezone]="timezone?.nativeElement.value"
+                (selected)="handleSelected($event)">
+            </app-table>
         </div>
     </div>

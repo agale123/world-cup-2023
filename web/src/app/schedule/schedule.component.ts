@@ -35,6 +35,8 @@ export class ScheduleComponent implements AfterViewInit {
 
   matchIds: number[] | undefined;
 
+  selected: number[] = [];
+
   readonly allCities = this.matchService.getAllCities();
   readonly groups = this.matchService.getGroups();
 
@@ -73,10 +75,18 @@ export class ScheduleComponent implements AfterViewInit {
     })).subscribe();
   }
 
+  handleSelected(selected: number[]) {
+    this.selected = selected;
+  }
+
+  filterToSelected() {
+    this.matchIds = [...this.selected];
+    this.updateMatches();
+  }
+
   clearMatchIds() {
     this.matchIds = undefined;
     this.updateMatches();
-    this.location.replaceState("/schedule")
   }
 
   getURL() {
@@ -90,15 +100,27 @@ export class ScheduleComponent implements AfterViewInit {
       .map((opt: HTMLOptionElement) => opt.value);
     if (countries.length > 0) {
       url.searchParams.set('tm', JSON.stringify(countries));
+    } else {
+      url.searchParams.delete('tm');
     }
     const cities = [...this.cities?.nativeElement.options]
       .filter((opt: HTMLOptionElement) => opt.selected)
       .map((opt: HTMLOptionElement) => opt.value);
     if (cities.length > 0) {
       url.searchParams.set('cty', JSON.stringify(cities));
+    } else {
+      url.searchParams.delete('cty');
     }
     if (this.projected.length > 0) {
       url.searchParams.set('prj', JSON.stringify(this.projected));
+    } else {
+      url.searchParams.delete('prj');
+    }
+    const matchIds = (this.matchIds || []);
+    if (matchIds.length > 0) {
+      url.searchParams.set('matchIds', matchIds.join(','));
+    } else {
+      url.searchParams.delete('matchIds');
     }
     url.pathname = '/schedule';
     return url.toString();

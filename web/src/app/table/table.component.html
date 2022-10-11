@@ -2,7 +2,12 @@
     <table class="table table-striped">
         <thead class="sticky-top bg-white">
             <tr>
-                <th scope="col">#</th>
+                <th scope="col"><input class="form-check-input" type="checkbox" value="" id="check-0"
+                        (change)="handleCheckbox($event)" *ngIf="showCheckboxes">
+                    <label class="form-check-label ps-1" for="check-0">
+                        #
+                    </label>
+                </th>
                 <th scope="col">Home</th>
                 <th scope="col">Away</th>
                 <th scope="col">City</th>
@@ -12,9 +17,19 @@
         </thead>
         <tbody>
             <tr *ngFor="let match of matches">
-                <th scope="row">{{match.id}}</th>
-                <td style="white-space:pre-wrap"><app-team [value]="match.home" [projections]="getMatchedProjections(match.home)"></app-team></td>
-                <td style="white-space:pre-wrap"><app-team [value]="match.away" [projections]="getMatchedProjections(match.away)"></app-team></td>
+                <th scope="row">
+                    <input class="form-check-input" type="checkbox" #checkbox [value]="match.id"
+                        id="check-{{match.id}}" (change)="emitSelected()" *ngIf="showCheckboxes">
+                    <label class="form-check-label ps-1" for="check-{{match.id}}">
+                        {{match.id}}
+                    </label>
+                </th>
+                <td style="white-space:pre-wrap">
+                    <app-team [value]="match.home" [projections]="getMatchedProjections(match.home)"></app-team>
+                </td>
+                <td style="white-space:pre-wrap">
+                    <app-team [value]="match.away" [projections]="getMatchedProjections(match.away)"></app-team>
+                </td>
                 <td [title]="titles[match.city]">{{match.city}}</td>
                 <td>{{formatDate(match.date, match.city)}}</td>
                 <td scope="row">{{getRound(match.id)}}</td>
