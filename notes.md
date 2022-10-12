@@ -44,8 +44,9 @@ bunch of New Zealand cities
 
 # Polish
 
-- [ ] Add facts for all countries
-- [ ] Add flags for all countries
+- [x] Add facts for all countries
+- [x] Add flags for all countries
 - [ ] Add game times
+- [ ] Add updated FIFA reankings
 - [x] Tune itinerary parameters
 - [x] Ensure site previews well on social media
