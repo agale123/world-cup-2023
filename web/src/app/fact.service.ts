@@ -1,3 +1,4 @@
+import { keyframes } from '@angular/animations';
 import { Injectable } from '@angular/core';
 import { CountryService } from './country.service';
 
@@ -6,181 +7,190 @@ export interface Fact {
   value: string,
 };
 
-const FACTS: {[key: string]: Fact[]} = {
-  'Argentina': [
-    { name: 'Past Appearances', value: '3' },
-    { name: 'Best Finish', value: 'Group Stage' },
-    { name: 'FIFA rank', value: '31' },
-    { name: 'Population', value: '45 million' },
-  ],
-  'Australia': [
-    { name: 'Past Appearances', value: '7' },
-    { name: 'Best Finish', value: 'Quarterfinals' },
-    { name: 'FIFA rank', value: '12' },
-    { name: 'Population', value: '26 million' },
-  ],
-  'Brazil': [
-    { name: 'Past Appearances', value: '8' },
-    { name: 'Best Finish', value: 'Runners-up' },
-    { name: 'FIFA rank', value: '9' },
-    { name: 'Population', value: '213 million' },
-  ],
-  'Canada': [
-    { name: 'Past Appearances', value: '7' },
-    { name: 'Best Finish', value: 'Fourth Place' },
-    { name: 'FIFA rank', value: '7' },
-    { name: 'Population', value: '38 million' },
-  ],
-  'China': [
-    { name: 'Past Appearances', value: '7' },
-    { name: 'Best Finish', value: 'Runners-up' },
-    { name: 'FIFA rank', value: '16' },
-    { name: 'Population', value: '1.4 billion' },
-  ],
-  'Colombia': [
-    { name: 'Past Appearances', value: '2' },
-    { name: 'Best Finish', value: 'Round of 16' },
-    { name: 'FIFA rank', value: '25' },
-    { name: 'Population', value: '51 million' },
-  ],
-  'Costa Rica': [
-    { name: 'Past Appearances', value: '1' },
-    { name: 'Best Finish', value: 'Group Stage' },
-    { name: 'FIFA rank', value: '37' },
-    { name: 'Population', value: '5.1 million' },
-  ],
-  'Denmark': [
-    { name: 'Past Appearances', value: '4' },
-    { name: 'Best Finish', value: 'Quarterfinals' },
-    { name: 'FIFA rank', value: '17' },
-    { name: 'Population', value: '5.8 million' },
-  ],
-  'England': [
-    { name: 'Past Appearances', value: '5' },
-    { name: 'Best Finish', value: 'Third place' },
-    { name: 'FIFA rank', value: '4' },
-    { name: 'Population', value: '56 million' },
-  ],
-  'France': [
-    { name: 'Past Appearances', value: '4' },
-    { name: 'Best Finish', value: 'Fourth Place' },
-    { name: 'FIFA rank', value: '5' },
-    { name: 'Population', value: '67 million' },
-  ],
-  'Germany': [
-    { name: 'Past Appearances', value: '8' },
-    { name: 'Best Finish', value: 'Champions' },
-    { name: 'Wins', value: '2'},
-    { name: 'FIFA rank', value: '2' },
-    { name: 'Population', value: '83 million' },
-  ],
-  'Ireland': [
-    { name: 'Past Appearances', value: '0' },
-    { name: 'FIFA rank', value: '26' },
-    { name: 'Population', value: '5.0 million' },
-  ],
-  'Italy': [
-    { name: 'Past Appearances', value: '3' },
-    { name: 'Best Finish', value: 'Quarterfinals' },
-    { name: 'FIFA rank', value: '15' },
-    { name: 'Population', value: '60 million' },
-  ],
-  'Jamaica': [
-    { name: 'Past Appearances', value: '1' },
-    { name: 'Best Finish', value: 'Group Stage' },
-    { name: 'FIFA rank', value: '42' },
-    { name: 'Population', value: '3.0 million' },
-  ],
-  'Japan': [
-    { name: 'Past Appearances', value: '8' },
-    { name: 'Best Finish', value: 'Champions' },
-    { name: 'Wins', value: '1' },
-    { name: 'FIFA rank', value: '11' },
-    { name: 'Population', value: '126 million' },
-  ],
-  'Morocco': [
-    { name: 'Past Appearances', value: '0' },
-    { name: 'FIFA rank', value: '76' },
-    { name: 'Population', value: '37 million' },
-  ],
-  'Netherlands': [
-    { name: 'Past Appearances', value: '2' },
-    { name: 'Best Finish', value: 'Runners-up' },
-    { name: 'FIFA rank', value: '6' },
-    { name: 'Population', value: '17 million' },
-  ],
-  'New Zealand': [
-    { name: 'Past Appearances', value: '5' },
-    { name: 'Best Finish', value: 'Group Stage' },
-    { name: 'FIFA rank', value: '22' },
-    { name: 'Population', value: '5.1 million' },
-  ],
-  'Nigeria': [
-    { name: 'Past Appearances', value: '8' },
-    { name: 'Best Finish', value: 'Quarterfinals' },
-    { name: 'FIFA rank', value: '46' },
-    { name: 'Population', value: '206 million' },
-  ],
-  'Norway': [
-    { name: 'Past Appearances', value: '8' },
-    { name: 'Best Finish', value: 'Champions' },
-    { name: 'Wins', value: '1'},
-    { name: 'FIFA rank', value: '13' },
-    { name: 'Population', value: '5.4 million' },
-  ],
-  'Philippines': [
-    { name: 'Past Appearances', value: '0' },
-    { name: 'FIFA rank', value: '53' },
-    { name: 'Population', value: '110 million' },
-  ],
-  'South Africa': [
-    { name: 'Past Appearances', value: '1' },
-    { name: 'Best Finish', value: 'Group Stage' },
-    { name: 'FIFA rank', value: '54' },
-    { name: 'Population', value: '59 million' },
-  ],
-  'South Korea': [
-    { name: 'Past Appearances', value: '3' },
-    { name: 'Best Finish', value: 'Round of 16' },
-    { name: 'FIFA rank', value: '18' },
-    { name: 'Population', value: '52 million' },
-  ],
-  'Spain': [
-    { name: 'Past Appearances', value: '2' },
-    { name: 'Best Finish', value: 'Round of 16' },
-    { name: 'FIFA rank', value: '8' },
-    { name: 'Population', value: '47 million' },
-  ],
-  'Sweden': [
-    { name: 'Past Appearances', value: '8' },
-    { name: 'Best Finish', value: 'Runners-up' },
-    { name: 'FIFA rank', value: '3' },
-    { name: 'Population', value: '10 million' },
-  ],
-  'Switzerland': [
-    { name: 'Past Appearances', value: '1' },
-    { name: 'Best Finish', value: 'Round of 16' },
-    { name: 'FIFA rank', value: '21' },
-    { name: 'Population', value: '8.6 million' },
-  ],
-  'United States': [
-    { name: 'Past Appearances', value: '8' },
-    { name: 'Best Finish', value: 'Champions' },
-    { name: 'Wins', value: '4' },
-    { name: 'FIFA rank', value: '1' },
-    { name: 'Population', value: '330 million' },
-  ],
-  'Vietnam': [
-    { name: 'Past Appearances', value: '0' },
-    { name: 'FIFA rank', value: '33' },
-    { name: 'Population', value: '97 million' },
-  ],
-  'Zambia': [
-    { name: 'Past Appearances', value: '0' },
-    { name: 'FIFA rank', value: '80' },
-    { name: 'Population', value: '18 million' },
-  ],
-}
+const FACTS: { [key: string]: { [key: string]: string } } = {
+  'Argentina': {
+    past_appearances: '3',
+    best_finish: 'Group Stage',
+    fifa_rank: '29',
+    population: '45 million',
+  },
+  'Australia': {
+    past_appearances: '7',
+    best_finish: 'Quarterfinals',
+    fifa_rank: '13',
+    population: '26 million',
+  },
+  'Brazil': {
+    past_appearances: '8',
+    best_finish: 'Runners-up',
+    fifa_rank: '9',
+    population: '213 million',
+  },
+  'Canada': {
+    past_appearances: '7',
+    best_finish: 'Fourth Place',
+    fifa_rank: '7',
+    population: '38 million',
+  },
+  'China': {
+    past_appearances: '7',
+    best_finish: 'Runners-up',
+    fifa_rank: '15',
+    population: '1.4 billion',
+  },
+  'Colombia': {
+    past_appearances: '2',
+    best_finish: 'Round of 16',
+    fifa_rank: '27',
+    population: '51 million',
+  },
+  'Costa Rica': {
+    past_appearances: '1',
+    best_finish: 'Group Stage',
+    fifa_rank: '37',
+    population: '5.1 million',
+  },
+  'Denmark': {
+    past_appearances: '4',
+    best_finish: 'Quarterfinals',
+    fifa_rank: '18',
+    population: '5.8 million',
+  },
+  'England': {
+    past_appearances: '5',
+    best_finish: 'Third place',
+    fifa_rank: '4',
+    population: '56 million',
+  },
+  'France': {
+    past_appearances: '4',
+    best_finish: 'Fourth Place',
+    fifa_rank: '5',
+    population: '67 million',
+  },
+  'Germany': {
+    past_appearances: '8',
+    best_finish: 'Champions',
+    wins: '2',
+    fifa_rank: '3',
+    population: '83 million',
+  },
+  'Ireland': {
+    past_appearances: '0',
+    fifa_rank: '24',
+    population: '5.0 million',
+  },
+  'Italy': {
+    past_appearances: '3',
+    best_finish: 'Quarterfinals',
+    fifa_rank: '14',
+    population: '60 million',
+  },
+  'Jamaica': {
+    past_appearances: '1',
+    best_finish: 'Group Stage',
+    fifa_rank: '43',
+
+    population: '3.0 million',
+  },
+  'Japan': {
+    past_appearances: '8',
+    best_finish: 'Champions',
+    wins: '1',
+    fifa_rank: '11',
+    population: '126 million',
+  },
+  'Morocco': {
+    past_appearances: '0',
+    fifa_rank: '76',
+    population: '37 million',
+  },
+  'Netherlands': {
+    past_appearances: '2',
+    best_finish: 'Runners-up',
+    fifa_rank: '8',
+    population: '17 million',
+  },
+  'New Zealand': {
+    past_appearances: '5',
+    best_finish: 'Group Stage',
+    fifa_rank: '22',
+    population: '5.1 million',
+  },
+  'Nigeria': {
+    past_appearances: '8',
+    best_finish: 'Quarterfinals',
+    fifa_rank: '45',
+    population: '206 million',
+  },
+  'Norway': {
+    past_appearances: '8',
+    best_finish: 'Champions',
+    wins: '1',
+    fifa_rank: '12',
+    population: '5.4 million',
+  },
+  'Philippines': {
+    past_appearances: '0',
+    fifa_rank: '53',
+    population: '110 million',
+  },
+  'South Africa': {
+    past_appearances: '1',
+    best_finish: 'Group Stage',
+    fifa_rank: '54',
+    population: '59 million',
+  },
+  'South Korea': {
+    past_appearances: '3',
+    best_finish: 'Round of 16',
+    fifa_rank: '17',
+    population: '52 million',
+  },
+  'Spain': {
+    past_appearances: '2',
+    best_finish: 'Round of 16',
+    fifa_rank: '6',
+    population: '47 million',
+  },
+  'Sweden': {
+    past_appearances: '8',
+    best_finish: 'Runners-up',
+    fifa_rank: '2',
+    population: '10 million',
+  },
+  'Switzerland': {
+    past_appearances: '1',
+    best_finish: 'Round of 16',
+    fifa_rank: '21',
+    population: '8.6 million',
+  },
+  'United States': {
+    past_appearances: '8',
+    best_finish: 'Champions',
+    wins: '4',
+    fifa_rank: '1',
+    population: '330 million',
+  },
+  'Vietnam': {
+    past_appearances: '0',
+    fifa_rank: '34',
+    population: '97 million',
+  },
+  'Zambia': {
+    past_appearances: '0',
+    fifa_rank: '81',
+    population: '18 million',
+  },
+};
+
+const FORMATTED_KEYS = {
+  'past_appearances': 'Past Appearances',
+  'best_finish': 'Best Finish',
+  'wins': 'Wins',
+  'fifa_rank': 'FIFA Rank',
+  'population': 'Population',
+};
 
 @Injectable({
   providedIn: 'root'
@@ -192,7 +202,16 @@ export class FactService {
   getFacts(country: string): Fact[] {
     const formattedCountry = this.countryService.formatCountry(country);
     if (formattedCountry in FACTS) {
-      return FACTS[formattedCountry];
+      const metadata = FACTS[formattedCountry];
+      const facts = []
+
+      for (const [key, value] of Object.entries(FORMATTED_KEYS)) {
+        if (key in metadata) {
+          facts.push({name: value, value: metadata[key]});
+        }
+      }
+      
+      return facts;
     }
     return [];
   }

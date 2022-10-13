@@ -1,9 +1,9 @@
 import { Location } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { select } from 'd3';
-import { first, map, Observable } from 'rxjs';
+import { tap, first, map, Observable, Subject, takeUntil } from 'rxjs';
 import { CountryService, FLAGS } from '../country.service';
 import { City, Match, MatchService } from '../match.service';
 import { RENDER_TIMES } from '../table/table.component';
@@ -21,7 +21,7 @@ interface Projection {
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.css'],
 })
-export class ScheduleComponent implements AfterViewInit {
+export class ScheduleComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('countries') countries?: ElementRef;
   @ViewChild('cities') cities?: ElementRef;
@@ -49,6 +49,7 @@ export class ScheduleComponent implements AfterViewInit {
     private readonly changeDetector: ChangeDetectorRef,
     private readonly activatedRoute: ActivatedRoute,
     private readonly location: Location,
+    private readonly router: Router,
     titleService: Title) {
     titleService.setTitle('World Cup Explorer - Schedule');
     const sortedMatches = this.matchService.getMatches().sort((a, b) => a.id - b.id);
@@ -66,13 +67,6 @@ export class ScheduleComponent implements AfterViewInit {
         this.formatMatchMap[match.away] = matchesMap[away];
       }
     }
-
-    activatedRoute.queryParams.pipe(first(), map(params => {
-      const ids = params['matchIds'];
-      this.matchIds = params['matchIds']
-        ? params['matchIds'].split(',').map((i: string) => parseInt(i))
-        : undefined;
-    })).subscribe();
   }
 
   handleSelected(selected: number[]) {
@@ -80,8 +74,10 @@ export class ScheduleComponent implements AfterViewInit {
   }
 
   filterToSelected() {
-    this.matchIds = [...this.selected];
-    this.updateMatches();
+    if (this.selected.length > 0) {
+      this.matchIds = [...this.selected];
+      this.updateMatches();
+    }
   }
 
   clearMatchIds() {
@@ -189,7 +185,7 @@ export class ScheduleComponent implements AfterViewInit {
     // Need to render the updated matches.
     this.changeDetector.detectChanges();
 
-    this.location.replaceState('/schedule' + this.getURL().split('schedule')[1]);
+    this.router.navigateByUrl('/schedule' + this.getURL().split('schedule')[1]);
   }
 
   selectedCountries?: string[];
@@ -202,18 +198,31 @@ export class ScheduleComponent implements AfterViewInit {
     return this.selectedCities?.includes(city);
   }
 
+  private readonly onDestroy = new Subject<void>();
+
+  ngOnDestroy() {
+    this.onDestroy.next();
+    this.onDestroy.unsubscribe();
+  }
+
   ngAfterViewInit(): void {
     $('.selectpicker').selectpicker();
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     Array.prototype.slice.call(tooltipTriggerList, 0)
       .map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
-    this.activatedRoute.queryParams.pipe(first(), map(params => {
+    this.activatedRoute.queryParams.pipe(takeUntil(this.onDestroy), map(params => {
+      this.matchIds = params['matchIds']
+        ? params['matchIds'].split(',').map((i: string) => parseInt(i))
+        : undefined;
+
       if (params['tz']) {
         $('.selectpicker.tz').selectpicker('val', params['tz']);
       }
       this.selectedCountries = params['tm'] ? JSON.parse(params['tm']) : [];
+      $('.selectpicker.tm').selectpicker('val', this.selectedCountries);
       this.selectedCities = params['cty'] ? JSON.parse(params['cty']) : [];
+      $('.selectpicker.cty').selectpicker('val', this.selectedCities);
       this.projected = params['prj'] ? JSON.parse(params['prj']) : [];
       this.changeDetector.detectChanges();
       $('.selectpicker').selectpicker();

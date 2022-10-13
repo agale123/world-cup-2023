@@ -23,7 +23,7 @@
                     </optgroup>
                 </select>
                 <div>Cities</div>
-                <select class="selectpicker" multiple data-live-search="true" data-actions-box="true" data-width="100%"
+                <select class="selectpicker cty" multiple data-live-search="true" data-actions-box="true" data-width="100%"
                     #cities (change)="updateMatches()" *ngIf="!!selectedCities">
                     <option *ngFor="let city of allCities" [selected]="isCitySelected(city)">{{city}}</option>
                 </select>
