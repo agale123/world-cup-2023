@@ -7,8 +7,7 @@ interface Projection {
   position: number;
 }
 
-// TODO(agale): Flip this value if game times are available.
-export const RENDER_TIMES = false;
+export const RENDER_TIMES = true;
 
 @Component({
   selector: 'app-table',

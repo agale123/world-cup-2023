@@ -88,7 +88,7 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
   getURL() {
     const url = new URL(window.location.href);
     const timezone = this.timezone?.nativeElement.value;
-    if (timezone && timezone !== 'local') {
+    if (timezone) {
       url.searchParams.set('tz', this.timezone?.nativeElement.value);
     }
     const countries = [...this.countries?.nativeElement.options]
