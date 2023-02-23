@@ -75,6 +75,11 @@ const FACTS: { [key: string]: { [key: string]: string } } = {
     fifa_rank: '3',
     population: '83 million',
   },
+  'Haiti': {
+    past_appearances: '0',
+    fifa_rank: '55',
+    population: '11 million',
+  },
   'Ireland': {
     past_appearances: '0',
     fifa_rank: '24',
@@ -130,10 +135,20 @@ const FACTS: { [key: string]: { [key: string]: string } } = {
     fifa_rank: '12',
     population: '5.4 million',
   },
+  'Panama': {
+    past_appearances: '0',
+    fifa_rank: '57',
+    population: '4.4 million',
+  },
   'Philippines': {
     past_appearances: '0',
     fifa_rank: '53',
     population: '110 million',
+  },
+  'Portugal': {
+    past_appearances: '0',
+    fifa_rank: '22',
+    population: '10 million',
   },
   'South Africa': {
     past_appearances: '1',
