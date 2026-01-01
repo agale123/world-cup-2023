@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 const COUNTRIES: {[key: string]: string} = {
+  // Group stage teams.
   'A1': 'New Zealand',
   'A2': 'Norway',
   'A3': 'Philippines',
@@ -33,6 +34,39 @@ const COUNTRIES: {[key: string]: string} = {
   'H2': 'Morocco',
   'H3': 'Colombia',
   'H4': 'South Korea',
+  // TODO(agale): put knockout teams here
+  '1A': 'Switzerland',
+  '2A': 'Norway',
+  '1B': 'Australia',
+  '2B': 'Nigeria',
+  '1C': 'Japan',
+  '2C': 'Spain',
+  '1D': 'England',
+  '2D': 'Denmark',
+  '1E': 'Netherlands',
+  '2E': 'United States',
+  '1F': 'France',
+  '2F': 'Jamaica',
+  '1G': 'Sweden',
+  '2G': 'South Africa',
+  '1H': 'Colombia',
+  '2H': 'Morocco',
+  'W49': 'Spain',
+  'W50': 'Japan',
+  'W51': 'Netherlands',
+  'W52': 'Sweden',
+  'W53': 'Australia',
+  'W54': 'England',
+  'W55': 'France',
+  'W56': 'Colombia',
+  'W57': 'Spain',
+  'W58': 'Sweden',
+  'W59': 'Australia',
+  'W60': 'England',
+  'W61': 'Spain',
+  'L61': 'Sweden',
+  'W62': 'England',
+  'L62': 'Australia',
 };
 
 export const FLAGS: {[key: string]: string} = {

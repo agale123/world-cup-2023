@@ -75,7 +75,6 @@ export class MatchService {
     });
   }
 
-  // TODO(agale): Add times in local times.
   getMatches(): Match[] {
     return [
       { id: 1, home: 'A1', away: 'A2', city: 'Auckland, NZ', date: new Date(Date.parse('2023/07/20 19:00 GMT+12')) },
